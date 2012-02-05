@@ -1,3 +1,6 @@
+:tocdepth: 3
+:editable: True
+
 ===================
 Configure vcwebedit
 ===================
@@ -59,7 +62,8 @@ There are three ways to control which pages are editable,
 2. The presence/absence of *editlink.html* in the `html_sidebars`_ configuration entry.
 3. The global `vcwebedit_all_editable` configuration entry.
 
-By default, no files are assumed to be editable.
+By default, no files are assumed to be editable.  The `editable` file-wide
+metadata entry should have a boolean value like *True* or *False*.
 
 
 .. _Git submodule:      http://book.git-scm.com/5_submodules.html

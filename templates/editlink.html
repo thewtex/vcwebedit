@@ -1,4 +1,4 @@
-{%- if has_source and sourcename %}
+{%- if has_source and meta is defined and meta.editable %}
   <h3>{{ _('Edit this page') }}</h3>
   <ul class="this-page-menu">
     <li><a href="{{ pathto('_sources/' + sourcename, true)|e }}"

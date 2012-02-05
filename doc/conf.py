@@ -217,3 +217,6 @@ man_pages = [
     ('index', 'vcwebedit', u'vcwebedit Documentation',
      [u'Matthew McCormick'], 1)
 ]
+
+# -- Options for the vcwebedit extension ---------------------------------------
+vcwebedit_all_editable = True
