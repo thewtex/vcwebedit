@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- General configuration -----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
-#needs_sphinx = '1.0'
+needs_sphinx = '1.0'
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
@@ -29,7 +29,7 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.viewcode',
     'vcwebedit']
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ['_templates', os.path.join('..', 'templates')]
 
 # The suffix of source filenames.
 source_suffix = '.rst'
@@ -132,7 +132,9 @@ html_static_path = ['_static']
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
+html_sidebars = {
+    '**': ['localtoc.html', 'relations.html', 'editlink.html', 'searchbox.html']
+    }
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.

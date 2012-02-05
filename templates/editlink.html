@@ -1,0 +1,7 @@
+{%- if has_source and sourcename %}
+  <h3>{{ _('Edit this page') }}</h3>
+  <ul class="this-page-menu">
+    <li><a href="{{ pathto('_sources/' + sourcename, true)|e }}"
+           rel="nofollow">{{ _('Edit online') }}</a></li>
+  </ul>
+{%- endif %}

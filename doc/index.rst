@@ -12,8 +12,8 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   web_edit
    configuration
+   web_edit
 
 Related projects
 ================
