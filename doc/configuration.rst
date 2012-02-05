@@ -9,8 +9,8 @@ How to configure your Sphinx project to use vcwebedit
 
 .. index:: install
 
-Install the vcwebedit extension
--------------------------------
+Install the extension
+---------------------
 
 If you Sphinx documentation is stored under the *doc* directory in a Git
 repository, the vcwebedit can be added as a `Git submodule`_::
@@ -26,9 +26,12 @@ enabled extensions::
   ...
   extensions = ['vcwebedit']
 
+Configuration
+-------------
+
 Custom templates used for creating links in the sidebar to go to the editing
 page, and for the edit page itself.  For Sphinx to see these templates, they
-should be added to the `templates_path` configuration entry::
+should be added to the `templates_path` `conf.py` configuration entry::
 
   template_path = ['_templates', 'ext/vcwebedit/templates']
 
