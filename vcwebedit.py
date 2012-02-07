@@ -22,6 +22,6 @@ def purge_editable(app, env, docname):
         meta.pop('editable')
 
 def setup(app):
-    app.add_config_value('vcwebedit_all_editable', False, True)
+    app.add_config_value('vcwebedit_all_editable', True, True)
     app.connect('doctree-resolved', mark_all_editable)
     app.connect('env-purge-doc', purge_editable)

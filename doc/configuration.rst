@@ -46,8 +46,8 @@ entry::
 Note that using the glob key entry for `html_sidebars`_ is one way to configure
 which pages are editable.
 
-To make all documents editable, set the `vcwebedit_all_editable` entry in your
-`conf.py` to `True` (defaults to `False`)::
+To make all documents not editable by default, set the `vcwebedit_all_editable`
+entry in your `conf.py` to `False` (defaults to `True`)::
 
   vcwebedit_all_editable = False
 
@@ -65,7 +65,7 @@ There are three ways to control which pages are editable,
 2. The presence/absence of *editlink.html* in the `html_sidebars`_ configuration entry.
 3. The global `vcwebedit_all_editable` configuration entry.
 
-By default, no files are assumed to be editable.  The `editable` file-wide
+By default, all sources are assumed to be editable.  The `editable` file-wide
 metadata entry should have a boolean value like *True* or *False*.
 
 
