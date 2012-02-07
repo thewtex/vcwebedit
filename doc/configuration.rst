@@ -51,7 +51,10 @@ entry in your `conf.py` to `False` (defaults to `True`)::
 
   vcwebedit_all_editable = False
 
-The `html_copy_source` configuration entry must be set to `True` (the default).
+Next, configure your `push method <push_methods>`_.
+
+Finally, make sure the `html_copy_source` configuration entry is set to `True`
+(the default).
 
 
 .. index:: editable

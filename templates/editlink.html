@@ -1,7 +1,17 @@
+{#
+
+  editlink.html
+  ~~~~~~~~~~~~~
+
+  Template for the "Edit this page" sidebar entry used with the vcwebedit
+  extension.
+
+#}
+
 {%- if has_source and meta is defined and meta.editable %}
   <h3>{{ _('Edit this page') }}</h3>
   <ul class="this-page-menu">
-    <li><a href="{{ pathto('_sources/' + sourcename, true)|e }}"
+    <li><a href="{{ pathto( editpagename )|e }}"
            rel="nofollow">{{ _('Edit online') }}</a></li>
   </ul>
 {%- endif %}
