@@ -13,6 +13,7 @@ Contents:
    :maxdepth: 2
 
    configuration
+   push_methods/push_methods
    web_edit
 
 Related projects
