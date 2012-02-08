@@ -12,3 +12,21 @@
   Some wicked awesome stuff here.
 {% endblock %}
 
+{%- macro editsidebar() %}
+      {%- if render_sidebar %}
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+          {%- block returnfromedit %}
+            <h3>{{ _('Return') }}</h3>
+            <ul class="this-page-menu">
+              <li><a href="{{ pathto( editpagename )|e }}"
+                     rel="nofollow">{{ _('Return to original page') }}</a></li>
+            </ul>
+          {%- endblock %}
+        </div>
+      </div>
+      {%- endif %}
+{%- endmacro %}
+{%- block sidebar2 -%}
+  {{ editsidebar() }}
+{%- endblock -%}
