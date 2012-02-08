@@ -25,12 +25,19 @@ def purge_editable(app, env, docname):
 
 
 def page_to_editpage(page):
-    """Translate a page name to its edit page name."""
+    """Translate a page name to its edit page name.  If it already is the edit
+    page, return the original page name."""
     if page.find('/') != -1:
         page_split = page.rsplit('/')
-        new_page = page_split[0] + '/_edit_' + page_split[1]
+        if len(page_split[0]) > 6 and page_split[1][:6] == '_edit_':
+            new_page = page_split[0] + '/' + page_split[1][6:]
+        else:
+            new_page = page_split[0] + '/_edit_' + page_split[1]
     else:
-        new_page = '_edit_' + page
+        if len(page) > 6 and page[:6] == '_edit_':
+            new_page = page[6:]
+        else:
+            new_page = '_edit_' + page
     return new_page
 
 def add_editpage_to_context(app, pagename, templatename, context, doctree):
