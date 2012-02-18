@@ -9,7 +9,7 @@
 #}
 {% extends "layout.html" %}
 {% block body %}
-  Some wicked awesome stuff here.
+ {{ pathto('_sources/' + editsourcename, true)|e }}
 {% endblock %}
 
 {%- macro editsidebar() %}

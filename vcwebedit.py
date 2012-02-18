@@ -51,8 +51,9 @@ def collect_edit_pages(app):
     for page, meta in env.metadata.iteritems():
         if meta.has_key('editable') and meta['editable']:
             new_page = page_to_editpage(page)
-            context = app.builder.get_doc_context(page, 'blah', '')
+            context = app.builder.get_doc_context(page, 'unused', '')
             # Prevent the HTMLBuilder from attempting to copy the source.
+            context['editsourcename'] = context['sourcename']
             context.pop('sourcename')
             yield (new_page, context, 'edit.html')
 
