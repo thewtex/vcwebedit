@@ -35,6 +35,10 @@ should be added to the `templates_path` `conf.py` configuration entry::
 
   template_path = ['_templates', 'ext/vcwebedit/templates']
 
+A similar configuration is needed for the html static files::
+
+  html_static_path = ['_static', 'ext/vcwebedit/static']
+
 The the location of the editting link in the sidebar is controlled by position
 at which the *editlink.html* entry appears the `html_sidebars`_ configuration
 entry::
