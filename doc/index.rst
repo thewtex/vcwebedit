@@ -1,7 +1,7 @@
 Welcome to vcwebedit's documentation!
 =====================================
 
-A work in progress!
+.. warning:: A work in progress!
 
 This Sphinx_ extension allows an author or contributor to edit Sphinx
 documentation in a web browser and submit the edits through a version control
