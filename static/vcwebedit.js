@@ -6,7 +6,8 @@ function vcw_editFile(url)
     $('#editor').html("");
     var myCodeMirror = CodeMirror(document.getElementById("editor"), {
       value: data,
-      mode:  "rst"
+      mode:  "rst",
+      lineNumbers: true
       });
     });
 }
