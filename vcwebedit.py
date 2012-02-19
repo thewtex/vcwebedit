@@ -49,7 +49,6 @@ def add_editpage_to_context(app, pagename, templatename, context, doctree):
     env = app.builder.env
     if env.metadata.has_key(editpagename):
         meta = env.metadata[editpagename]
-        #import ipdb; ipdb.set_trace()
         if meta.has_key('editable') and meta['editable']:
             css_files = context['css_files']
             codemirror_css = '_static/codemirror2/lib/codemirror.css'
@@ -57,15 +56,17 @@ def add_editpage_to_context(app, pagename, templatename, context, doctree):
                 css_files.append(codemirror_css)
             context['css_files'] = css_files
             script_files = context['script_files']
-            codemirror_js = '_static/codemirror2/lib/codemirror.js'
-            if not codemirror_js in script_files:
-                script_files.append(codemirror_js)
-            codemirror_rst = '_static/codemirror2/mode/rst/rst.js'
-            if not codemirror_rst in script_files:
-                script_files.append(codemirror_rst)
-            vcwebedit_js = '_static/vcwebedit.js'
-            if not vcwebedit_js in script_files:
-                script_files.append(vcwebedit_js)
+            #import ipdb; ipdb.set_trace()
+            def add_script_file(path):
+                full_path = '_static/' + path
+                if not full_path in script_files:
+                    script_files.append(full_path)
+            add_script_file('codemirror2/lib/codemirror.js')
+            add_script_file('codemirror2/keymap/emacs.js')
+            add_script_file('codemirror2/keymap/vim.js')
+            add_script_file('codemirror2/mode/rst/rst.js')
+            add_script_file('cookies.js')
+            add_script_file('vcwebedit.js')
             context['script_files'] = script_files
 
 

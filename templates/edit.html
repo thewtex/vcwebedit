@@ -22,6 +22,17 @@
       {%- if render_sidebar %}
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+          {%- block editoroptions %}
+            <h3>{{ _('Editor options') }}</h3>
+            <form>
+              Keymap:
+              <select id="keymapSelection" onchange="vcw_selectKeymap()">
+                <option>default</option>
+                <option>emacs</option>
+                <option>vim</option>
+              </select>
+            </form>
+          {%- endblock %}
           {%- block returnfromedit %}
             <h3>{{ _('Return') }}</h3>
             <ul class="this-page-menu">
