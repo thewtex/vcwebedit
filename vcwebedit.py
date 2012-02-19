@@ -63,6 +63,9 @@ def add_editpage_to_context(app, pagename, templatename, context, doctree):
             codemirror_rst = '_static/codemirror2/mode/rst/rst.js'
             if not codemirror_rst in script_files:
                 script_files.append(codemirror_rst)
+            vcwebedit_js = '_static/vcwebedit.js'
+            if not vcwebedit_js in script_files:
+                script_files.append(vcwebedit_js)
             context['script_files'] = script_files
 
 

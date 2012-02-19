@@ -9,7 +9,13 @@
 #}
 {% extends "layout.html" %}
 {% block body %}
- {{ pathto('_sources/' + editsourcename, true)|e }}
+          <div id="editor">
+           {{ pathto('_sources/' + editsourcename, true)|e }}
+          </div>
+
+          <script type="text/javascript">
+            vcw_editFile("{{ pathto('_sources/' + editsourcename, true)|e }}");
+          </script>
 {% endblock %}
 
 {%- macro editsidebar() %}
@@ -30,3 +36,4 @@
 {%- block sidebar2 -%}
   {{ editsidebar() }}
 {%- endblock -%}
+
