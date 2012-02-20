@@ -8,6 +8,11 @@
 
 #}
 {% extends "layout.html" %}
+{%- block extrahead %}
+    {# A larger default height for the editor. #}
+    <style type="text/css">.CodeMirror-scroll { height: 500px; }</style>
+    {{ super() }}
+{%- endblock %}
 {% block body %}
           <div id="editor">
            {{ pathto('_sources/' + editsourcename, true)|e }}
@@ -23,15 +28,19 @@
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
           {%- block editoroptions %}
-            <h3>{{ _('Editor options') }}</h3>
-            <form>
-              Keymap:
-              <select id="keymapSelection" onchange="vcw_selectKeymap()">
-                <option>default</option>
-                <option>emacs</option>
-                <option>vim</option>
-              </select>
-            </form>
+          <h3>{{ _('Editor options') }}</h3>
+          <form><table>
+            <tr align="left">
+              <td>Keymap:</td>
+              <td>
+                <select id="keymapSelection" onchange="vcw_selectKeymap()">
+                  <option>default</option>
+                  <option>emacs</option>
+                  <option>vim</option>
+                </select>
+              </td>
+            </tr>
+          </table></form>
           {%- endblock %}
           {%- block returnfromedit %}
             <h3>{{ _('Return') }}</h3>
