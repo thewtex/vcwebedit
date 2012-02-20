@@ -1,0 +1,10 @@
+{#
+
+  Fixes the CSS template problem when nature.css is used with codemirror.css.
+
+#}
+{% extends "!layout.html" %}
+{%- block extrahead %}
+    <style type="text/css">.CodeMirror pre { background: white; }</style>
+{%- endblock %}
+
