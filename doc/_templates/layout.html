@@ -19,7 +19,7 @@
 {%- block body %}
         {%- if has_source and meta is defined and meta.editable %}
           <h2>vcwebedit Unit Tests</h2>
-          <input type="button" value="Run the vcwebedit unit tests" onclick="test_vcwebedit()" />
+          <input type="button" value="Run the vcwebedit unit tests" onclick="vcw.run_tests()" />
           <div style="display:none" id="vcwebedit-test-results">
             <h1 id="qunit-header">vcwebedit Unit Test Results</h1>
             <h2 id="qunit-banner"></h2>

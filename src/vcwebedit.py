@@ -64,7 +64,6 @@ def add_editpage_to_context(app, pagename, templatename, context, doctree):
             add_script_file('codemirror2/keymap/emacs.js')
             add_script_file('codemirror2/keymap/vim.js')
             add_script_file('codemirror2/mode/rst/rst.js')
-            add_script_file('cookies.js')
             add_script_file('vcwebedit.js')
             context['script_files'] = script_files
 
