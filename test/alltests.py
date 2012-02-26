@@ -16,7 +16,7 @@ sphinx_argv = ['sphinx-build',
     '-b', 'html',
     '-W',
     '-d', os.path.join(build_dir, 'doctrees'),
-    source_dir, build_dir]
+    source_dir, os.path.join(build_dir, 'html')]
 print("Building vcwebedit documentation with:\n")
 print(' '.join(sphinx_argv))
 build_result = sphinx.cmdline.main(sphinx_argv)

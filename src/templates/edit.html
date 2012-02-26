@@ -14,6 +14,7 @@
     {{ super() }}
 {%- endblock %}
 {% block body %}
+          {{ super() }}
           <div id="editor">
            {{ pathto('_sources/' + editsourcename, true)|e }}
           </div>

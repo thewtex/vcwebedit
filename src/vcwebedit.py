@@ -56,7 +56,6 @@ def add_editpage_to_context(app, pagename, templatename, context, doctree):
                 css_files.append(codemirror_css)
             context['css_files'] = css_files
             script_files = context['script_files']
-            #import ipdb; ipdb.set_trace()
             def add_script_file(path):
                 full_path = '_static/' + path
                 if not full_path in script_files:
