@@ -18,11 +18,15 @@ repository, the vcwebedit can be added as a `Git submodule`_::
   mkdir doc/ext
   git submodule add -- git://github.com/thewtex/vcwebedit.git doc/ext/vcwebedit
 
+The project uses its own submodules, so be sure to grab them,
+
+  git submodule update --init --recursive
+
 In your *conf.py*, add the extension location to the `sys.path` and the list of
 enabled extensions::
 
   ...
-  sys.path.insert(0, os.path.abspath('ext/vcwebedit'))
+  sys.path.insert(0, os.path.abspath('ext/vcwebedit/src'))
   ...
   extensions = ['vcwebedit']
 
@@ -33,11 +37,11 @@ Custom templates used for creating links in the sidebar to go to the editing
 page, and for the edit page itself.  For Sphinx to see these templates, they
 should be added to the `templates_path` `conf.py` configuration entry::
 
-  template_path = ['_templates', 'ext/vcwebedit/templates']
+  template_path = ['_templates', 'ext/vcwebedit/src/templates']
 
 A similar configuration is needed for the html static files::
 
-  html_static_path = ['_static', 'ext/vcwebedit/static']
+  html_static_path = ['_static', 'ext/vcwebedit/src/static']
 
 The the location of the editting link in the sidebar is controlled by position
 at which the *editlink.html* entry appears the `html_sidebars`_ configuration

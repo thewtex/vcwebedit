@@ -1,3 +1,3 @@
-[submodule "static/codemirror2"]
-	path = static/codemirror2
-	url = https://github.com/marijnh/CodeMirror2.git
+[submodule "src/static/codemirror2"]
+	path = src/static/codemirror2
+	url = http://marijnhaverbeke.nl/git/codemirror2
