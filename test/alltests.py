@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
-"""Build the documentation, and run the JavaScript tests."""
+"""Build the documentation, and run the JavaScript tests with phantomjs if
+available."""
 
 import sphinx.cmdline
 
 import argparse
 import os
+import subprocess
 import sys
 import multiprocessing
 # Sane name in Python 3
@@ -27,6 +29,9 @@ parser.add_argument("-p", "--port",
 parser.add_argument("-l", "--linger",
         action='store_true',
         help="Keep the local web server open after the tests run.")
+parser.add_argument("-j", "--phantomjs",
+        default="phantomjs",
+        help="Path to the phantomjs executable.")
 options = parser.parse_args()
 
 # Build the documentation for vcwebedit.
@@ -58,6 +63,21 @@ def serve_on_port(port):
 httpd_process = multiprocessing.Process(target=serve_on_port, args=[options.port])
 httpd_process.start()
 
+
+# Run the javascript tests with phantomjs if available.
+try:
+    print("phantomjs version:")
+    return_code = subprocess.call([options.phantomjs, '--version'])
+    if return_code != 0:
+        print("\nCould not execute phantomjs.  Skipping automated JavaScript tests.")
+    else:
+        testing_results = subprocess.check_output([options.phantomjs,
+            os.path.join(source_dir, '..', 'test', 'phantomjs_test.js'),
+            'http://localhost:' + str(options.port) + '/_edit_index.html'])
+        print("\n\nTesting results:")
+        print(testing_results)
+except OSError:
+    print("Could not execute phantomjs.  Skipping automated JavaScript tests.")
 
 
 if options.linger:
