@@ -2,11 +2,32 @@
 
   Fixes the CSS template problem when nature.css is used with codemirror.css.
 
+  Our unit tests live in the documentation.  Add output here.
+
 #}
 {% extends "!layout.html" %}
 {%- block extrahead %}
+  {%- if has_source and meta is defined and meta.editable %}
+    <link  rel="stylesheet" href="_static/qunit/qunit.css" type="text/css" />
+    <script type="text/javascript" src="_static/qunit/qunit.js"></script>
+    <script type="text/javascript" src="_static/test_vcwebedit.js"></script>
+  {%- endif %}
     <style type="text/css">.CodeMirror pre { background: white; } .CodeMirror
       pre.CodeMirror-cursor { height:1.3em; }</style>
     {{ super() }}
 {%- endblock %}
-
+{%- block body %}
+        {%- if has_source and meta is defined and meta.editable %}
+          <h2>vcwebedit Unit Tests</h2>
+          <input type="button" value="Run the vcwebedit unit tests" onclick="vcw.run_tests()" />
+          <div style="display:none" id="vcwebedit-test-results">
+            <h1 id="qunit-header">vcwebedit Unit Test Results</h1>
+            <h2 id="qunit-banner"></h2>
+            <div id="qunit-testrunner-toolbar"></div>
+            <h2 id="qunit-userAgent"></h2>
+            <ol id="qunit-tests"></ol>
+            <div id="qunit-fixture">test markup, will be hidden</div>
+          </div>
+        {%- endif %}
+       {{ super() }}
+{%- endblock %}
