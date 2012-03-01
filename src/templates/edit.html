@@ -20,7 +20,8 @@
           </div>
 
           <script type="text/javascript">
-            vcw_editFile("{{ pathto('_sources/' + editsourcename, true)|e }}");
+            var editor = new vcw.Editor();
+            editor.loadFile("{{ pathto('_sources/' + editsourcename, true)|e }}");
           </script>
 {% endblock %}
 

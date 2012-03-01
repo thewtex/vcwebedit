@@ -4,8 +4,8 @@ var vcw = vcw || {};
 
 /** Create a browser cookie.  If path is not set, then it defaults to '/'.
  */
-vcw.create_cookie = function ( cookie_name, value, expiration_days, path )
-{
+vcw.create_cookie = function ( cookie_name, value, expiration_days, path ) {
+
   var expires = '';
   if( expiration_days )
     {
@@ -21,8 +21,8 @@ vcw.create_cookie = function ( cookie_name, value, expiration_days, path )
   document.cookie = cookie_name + '=' + escape( value ) + expires + path_entry
 }
 
-vcw.read_cookie = function ( desired_cookie_name )
-{
+vcw.read_cookie = function ( desired_cookie_name ) {
+
   var cookies = document.cookie.split(';');
   var cookie_name;
   var cookie_value;
@@ -41,23 +41,42 @@ vcw.read_cookie = function ( desired_cookie_name )
   return null;
 }
 
-// Load the file into the editor interface.
-function vcw_editFile(url)
-{
-  $.get(url, function(data) {
-    // Clear the default, which is the path to the document.
-    $('#editor').html("");
-    vcw_editor = CodeMirror( document.getElementById("editor"), {
-      value: data,
+/** Editor object.  Manages multiple CodeMirror editors. */
+vcw.Editor = function() {
+
+  // Clear the default, which is the path to the document.
+  $('#editor').html("");
+
+  // Start with one empty editor.
+  this.codeMirrorEditors = [CodeMirror( document.getElementById("editor"), {
       mode:  "rst",
+      lineWrapping: true,
       lineNumbers: true
-      });
-    var keymap = vcw.read_cookie( "vcw_keymap" );
-    if( keymap )
-      {
-      vcw_editor.setOption( "keyMap", keymap );
-      document.getElementById( "keymapSelection" ).value = keymap;
-      }
+      })];
+
+  var keymap = vcw.read_cookie( "vcw.editor.keymap" );
+  if( keymap )
+    {
+    this.codeMirrorEditors[0].setOption( "keyMap", keymap );
+    document.getElementById( "keymapSelection" ).value = keymap;
+    }
+}
+
+/** Load a file into the editor.
+ *
+ * Method on the Editor object.
+ */
+vcw.Editor.prototype.loadFile = function( url, editorIdx )
+{
+  if( editorIdx == null )
+    {
+    editorIdx = 0;
+    }
+
+  var editor = this.codeMirrorEditors[editorIdx];
+  var data = $.get(url, function(data)
+    {
+    editor.setValue( data );
     });
 }
 
@@ -65,5 +84,5 @@ function vcw_selectKeymap()
 {
   var keymap = document.getElementById( "keymapSelection" ).value;
   vcw_editor.setOption( "keyMap", keymap );
-  vcw.create_cookie( "vcw_keymap", keymap, 365 );
+  vcw.create_cookie( "vcw.editor.keymap", keymap, 365 );
 }
