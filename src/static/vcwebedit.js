@@ -57,6 +57,21 @@ vcw.Editor = function()
 
 }
 
+/** Get one of the internal CodeMirror editor instances.
+ *
+ * \param idx The index of the CodeMirror instance.  Defaults to 0.
+ *
+ * Method on the Editor object.
+ */
+vcw.Editor.prototype.getCodeMirror = function( idx )
+{
+  if( !idx )
+    {
+    idx = 0;
+    }
+  return this.codeMirrorEditors[idx];
+}
+
 /** Load a file into the editor.
  *
  * Method on the Editor object.
