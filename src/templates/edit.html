@@ -20,9 +20,32 @@
           </div>
 
           <script type="text/javascript">
-            var editor = new vcw.Editor();
+            // global editor variable
+            editor = new vcw.Editor();
             editor.loadFile("{{ pathto('_sources/' + editsourcename, true)|e }}");
-          </script>
+            function initializeWindow()
+              {
+              // Use the keymap cookie.
+              var keymap = vcw.read_cookie( "vcw.editor.keymap" );
+              if( keymap )
+                {
+                document.getElementById( "vcw.keymapSelection" ).value = keymap;
+                editor.selectKeymap( keymap );
+                }
+              }
+            if( window.onload )
+              {
+              window.onload = function()
+                {
+                window.onload();
+                initializeWindow();
+                }
+              }
+            else
+              {
+              window.onload = initializeWindow;
+              }
+            </script>
 {% endblock %}
 
 {%- macro editsidebar() %}
@@ -35,7 +58,7 @@
             <tr align="left">
               <td>Keymap:</td>
               <td>
-                <select id="keymapSelection" onchange="vcw_selectKeymap()">
+                <select id="vcw.keymapSelection" onchange="editor.selectKeymap()">
                   <option>default</option>
                   <option>emacs</option>
                   <option>vim</option>

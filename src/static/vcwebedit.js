@@ -4,7 +4,8 @@ var vcw = vcw || {};
 
 /** Create a browser cookie.  If path is not set, then it defaults to '/'.
  */
-vcw.create_cookie = function ( cookie_name, value, expiration_days, path ) {
+vcw.create_cookie = function ( cookie_name, value, expiration_days, path )
+{
 
   var expires = '';
   if( expiration_days )
@@ -21,8 +22,8 @@ vcw.create_cookie = function ( cookie_name, value, expiration_days, path ) {
   document.cookie = cookie_name + '=' + escape( value ) + expires + path_entry
 }
 
-vcw.read_cookie = function ( desired_cookie_name ) {
-
+vcw.read_cookie = function ( desired_cookie_name )
+{
   var cookies = document.cookie.split(';');
   var cookie_name;
   var cookie_value;
@@ -42,8 +43,8 @@ vcw.read_cookie = function ( desired_cookie_name ) {
 }
 
 /** Editor object.  Manages multiple CodeMirror editors. */
-vcw.Editor = function() {
-
+vcw.Editor = function()
+{
   // Clear the default, which is the path to the document.
   $('#editor').html("");
 
@@ -54,12 +55,6 @@ vcw.Editor = function() {
       lineNumbers: true
       })];
 
-  var keymap = vcw.read_cookie( "vcw.editor.keymap" );
-  if( keymap )
-    {
-    this.codeMirrorEditors[0].setOption( "keyMap", keymap );
-    document.getElementById( "keymapSelection" ).value = keymap;
-    }
 }
 
 /** Load a file into the editor.
@@ -80,9 +75,23 @@ vcw.Editor.prototype.loadFile = function( url, editorIdx )
     });
 }
 
-function vcw_selectKeymap()
+/** Select a different keymap.
+ *
+ * Uses the keymap argument or the values of the element with id vcw.keymapSelection
+ *
+ * Method on the Editor object.
+ */
+vcw.Editor.prototype.selectKeymap = function( keymap )
 {
-  var keymap = document.getElementById( "keymapSelection" ).value;
-  vcw_editor.setOption( "keyMap", keymap );
+  if( !keymap )
+    {
+    keymap = document.getElementById( "vcw.keymapSelection" ).value;
+    }
+
+  var ii;
+  for( ii = 0; ii < this.codeMirrorEditors.length; ++ii )
+    {
+    this.codeMirrorEditors[ii].setOption( "keyMap", keymap );
+    }
   vcw.create_cookie( "vcw.editor.keymap", keymap, 365 );
 }
