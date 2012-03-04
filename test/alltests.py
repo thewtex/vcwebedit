@@ -74,6 +74,7 @@ try:
         testing_results = subprocess.call([options.phantomjs,
             os.path.join(source_dir, '..', 'test', 'phantomjs_test.js'),
             'http://localhost:' + str(options.port) + '/_edit_index.html'])
+        print("")
 except OSError:
     print("Could not execute phantomjs.  Skipping automated JavaScript tests.")
 

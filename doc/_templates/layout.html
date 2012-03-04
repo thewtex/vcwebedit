@@ -12,9 +12,7 @@
     <script type="text/javascript" src="_static/qunit/qunit.js"></script>
     <script type="text/javascript" src="_static/test_vcwebedit.js"></script>
   {%- endif %}
-    <style type="text/css">.CodeMirror pre { background: white; } .CodeMirror
-      pre.CodeMirror-cursor { height:1.3em; }</style>
-    {{ super() }}
+  {{ super() }}
 {%- endblock %}
 {%- block body %}
         {%- if has_source and meta is defined and meta.editable %}

@@ -54,6 +54,12 @@ def add_editpage_to_context(app, pagename, templatename, context, doctree):
             codemirror_css = '_static/codemirror2/lib/codemirror.css'
             if not codemirror_css in css_files:
                 css_files.append(codemirror_css)
+            css_prefix = '_static/codemirror2/theme/'
+            for theme in ['cobalt', 'eclipse', 'elegant', 'monokai',
+                    'neat', 'night', 'rubyblue']:
+                theme_css = css_prefix + theme + '.css'
+                if not theme_css in css_files:
+                    css_files.append(theme_css)
             context['css_files'] = css_files
             script_files = context['script_files']
             def add_script_file(path):

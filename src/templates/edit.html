@@ -11,6 +11,8 @@
 {%- block extrahead %}
     {# A larger default height for the editor. #}
     <style type="text/css">.CodeMirror-scroll { height: 500px; }</style>
+    {# Fix for the cursor height. #}
+    <style type="text/css">.CodeMirror pre.CodeMirror-cursor { height:1.3em; }</style>
     {{ super() }}
 {%- endblock %}
 {% block body %}
@@ -32,6 +34,13 @@
                 {
                 document.getElementById( "vcw.keymapSelection" ).value = keymap;
                 editor.selectKeymap( keymap );
+                }
+              // Use the theme cookie.
+              var theme = vcw.read_cookie( "vcw.editor.theme" );
+              if( theme )
+                {
+                document.getElementById( "vcw.themeSelection" ).value = theme;
+                editor.selectTheme( theme );
                 }
               }
             if( window.onload )
@@ -57,7 +66,22 @@
           <h3>{{ _('Editor options') }}</h3>
           <form><table>
             <tr align="left">
-              <td>Keymap:</td>
+              <td><a class="reference internal">Theme:</a></td>
+              <td>
+                <select id="vcw.themeSelection" onchange="editor.selectTheme()">
+                  <option>default</option>
+                  <option>night</option>
+                  <option>monokai</option>
+                  <option>neat</option>
+                  <option>elegant</option>
+                  <option>cobalt</option>
+                  <option>eclipse</option>
+                  <option>rubyblue</option>
+                </select>
+              </td>
+            </tr>
+            <tr align="left">
+              <td><a class="reference internal">Keymap:</a></td>
               <td>
                 <select id="vcw.keymapSelection" onchange="editor.selectKeymap()">
                   <option>default</option>

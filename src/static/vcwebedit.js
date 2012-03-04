@@ -110,3 +110,24 @@ vcw.Editor.prototype.selectKeymap = function( keymap )
     }
   vcw.create_cookie( "vcw.editor.keymap", keymap, 365 );
 }
+
+/** Select a different theme.
+ *
+ * Uses the theme argument or the values of the element with id vcw.themeSelection
+ *
+ * Method on the Editor object.
+ */
+vcw.Editor.prototype.selectTheme = function( theme )
+{
+  if( !theme )
+    {
+    theme = document.getElementById( "vcw.themeSelection" ).value;
+    }
+
+  var ii;
+  for( ii = 0; ii < this.codeMirrorEditors.length; ++ii )
+    {
+    this.codeMirrorEditors[ii].setOption( "theme", theme );
+    }
+  vcw.create_cookie( "vcw.editor.theme", theme, 365 );
+}
