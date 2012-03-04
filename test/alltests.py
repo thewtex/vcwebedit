@@ -63,19 +63,17 @@ def serve_on_port(port):
 httpd_process = multiprocessing.Process(target=serve_on_port, args=[options.port])
 httpd_process.start()
 
-
 # Run the javascript tests with phantomjs if available.
+testing_results = 0
 try:
     print("phantomjs version:")
     return_code = subprocess.call([options.phantomjs, '--version'])
     if return_code != 0:
         print("\nCould not execute phantomjs.  Skipping automated JavaScript tests.")
     else:
-        testing_results = subprocess.check_output([options.phantomjs,
+        testing_results = subprocess.call([options.phantomjs,
             os.path.join(source_dir, '..', 'test', 'phantomjs_test.js'),
             'http://localhost:' + str(options.port) + '/_edit_index.html'])
-        print("\n\nTesting results:")
-        print(testing_results)
 except OSError:
     print("Could not execute phantomjs.  Skipping automated JavaScript tests.")
 
@@ -88,4 +86,4 @@ print('Shutting down the testing web server...')
 httpd_process.terminate()
 
 # Exit success
-sys.exit(0)
+sys.exit(testing_results)
