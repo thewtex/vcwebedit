@@ -7,3 +7,6 @@
 [submodule "doc/proBlue"]
 	path = doc/proBlue
 	url = https://github.com/kellycreativetech/proBlue.git
+[submodule "src/static/jsdiff"]
+	path = src/static/jsdiff
+	url = https://github.com/kpdecker/jsdiff.git
