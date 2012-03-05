@@ -92,6 +92,16 @@
             </tr>
           </table></form>
           {%- endblock %}
+          {%- block savepatch %}
+          <h3>{{ _('Save patch') }}</h3>
+          <form><table>
+            <tr>
+              <td>
+                <button type="button" onclick="vcw_savePatchLocally()">Save Patch Locally</button>
+              </td>
+            </tr>
+          </table></form>
+          {%- endblock %}
           {%- block returnfromedit %}
             <h3>{{ _('Return') }}</h3>
             <ul class="this-page-menu">
