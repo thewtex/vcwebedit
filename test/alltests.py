@@ -57,10 +57,13 @@ else:
 print('Starting up the testing web server...')
 os.chdir(os.path.join(build_dir, 'html'))
 
+class ThreadedHTTPServer(TCPServer):
+    allow_reuse_address = True
+
 class ServerRunner(object):
     def serve_on_port(self, port):
         handler = server.SimpleHTTPRequestHandler
-        self.httpd = TCPServer(("localhost", options.port), handler)
+        self.httpd = ThreadedHTTPServer(("localhost", options.port), handler)
         self.server_thread = threading.Thread(
             target=self.httpd.serve_forever
             )
