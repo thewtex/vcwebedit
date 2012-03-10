@@ -60,6 +60,15 @@ entry in your `conf.py` to `False` (defaults to `True`)::
 
   vcwebedit_all_editable = False
 
+For submission to a version, the relative path from the repository root to the
+Sphinx sources should be set.  This is specified with the `vcwebedit_vc_root`
+`conf.py` entry. For example, the correct setting would be::
+
+  vcwebedit_vc_root = 'doc'
+
+if the *master_doc* was located within the repository at *doc/index.rst*.  The
+default value for `vcwebedit_vc_root` is *.*.
+
 Next, configure your `push method <push_methods>`_.
 
 Finally, make sure the `html_copy_source` configuration entry is set to `True`

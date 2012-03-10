@@ -221,5 +221,9 @@ man_pages = [
 ]
 
 # -- Options for the vcwebedit extension ---------------------------------------
+
 # Are all documents editable by default?
 vcwebedit_all_editable = True
+
+# What is the location of the Sphinx master_doc in the repository?
+vcwebedit_vc_root = 'doc'

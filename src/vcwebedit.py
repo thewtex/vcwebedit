@@ -73,6 +73,19 @@ def add_editpage_to_context(app, pagename, templatename, context, doctree):
             add_script_file('vcwebedit.js')
             context['script_files'] = script_files
 
+def generate_json_filelisting(app, pagename, templatename, context, doctree):
+    """Create a JSON file in the _sources containing a list of editable
+    files."""
+    editpagename = page_to_editpage(pagename)
+
+    env = app.builder.env
+    if env.metadata.has_key(editpagename):
+        meta = env.metadata[editpagename]
+        if meta.has_key('editable') and meta['editable']:
+            pass
+            import ipdb; ipdb.set_trace()
+            original_pagename = page_to_editpage(pagename) + env.config.source_suffix
+            # app.outdir
 
 def collect_edit_pages(app):
     """Add the edit pages to the HTML pages that will be rendered."""
@@ -89,8 +102,10 @@ def collect_edit_pages(app):
 
 def setup(app):
     app.add_config_value('vcwebedit_all_editable', True, True)
+    app.add_config_value('vcwebedit_vc_root', '.', 'html')
 
     app.connect('doctree-resolved', mark_all_editable)
     app.connect('env-purge-doc', purge_editable)
     app.connect('html-collect-pages', collect_edit_pages)
     app.connect('html-page-context', add_editpage_to_context)
+    app.connect('html-page-context', generate_json_filelisting)
