@@ -9,7 +9,7 @@ import argparse
 import os
 import subprocess
 import sys
-import multiprocessing
+import threading
 # Sane name in Python 3
 try:
     from http import server
@@ -56,12 +56,25 @@ else:
 
 print('Starting up the testing web server...')
 os.chdir(os.path.join(build_dir, 'html'))
-def serve_on_port(port):
-    handler = server.SimpleHTTPRequestHandler
-    httpd = TCPServer(("localhost", options.port), handler)
-    httpd.serve_forever()
-httpd_process = multiprocessing.Process(target=serve_on_port, args=[options.port])
-httpd_process.start()
+
+class ServerRunner(object):
+    def serve_on_port(self, port):
+        handler = server.SimpleHTTPRequestHandler
+        self.httpd = TCPServer(("localhost", options.port), handler)
+        self.server_thread = threading.Thread(
+            target=self.httpd.serve_forever
+            )
+        self.server_thread.daemon = True
+        self.server_thread.start()
+
+    def cleanup(self):
+        if self.httpd is not None:
+            print('Shutting down the testing web server...')
+            self.httpd.shutdown()
+            self.httpd.server_close()
+
+server_runner = ServerRunner()
+server_runner.serve_on_port(options.port)
 
 # Run the javascript tests with phantomjs if available.
 testing_results = 0
@@ -78,13 +91,10 @@ try:
 except OSError:
     print("Could not execute phantomjs.  Skipping automated JavaScript tests.")
 
-
 if options.linger:
     print('Point your browser to http://localhost:' + str(options.port) + '/')
     raw_input('Press any key to shutdown the webserver.')
 
-print('Shutting down the testing web server...')
-httpd_process.terminate()
+server_runner.cleanup()
 
-# Exit success
 sys.exit(testing_results)
