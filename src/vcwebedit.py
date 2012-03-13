@@ -1,3 +1,6 @@
+import json
+import os
+
 from docutils import nodes
 from sphinx.util.compat import Directive
 
@@ -41,51 +44,96 @@ def page_to_editpage(page):
     return new_page
 
 
+def page_is_editable(app, pagename):
+    """Utility function to determine if a page is editable."""
+    editpagename = page_to_editpage(pagename)
+    env = app.builder.env
+    if env.metadata.has_key(editpagename):
+        meta = env.metadata[editpagename]
+        if meta.has_key('editable') and meta['editable']:
+            return True
+    return False
+
+
 def add_editpage_to_context(app, pagename, templatename, context, doctree):
     """Add the editpage name to the HTML template context."""
     editpagename = page_to_editpage(pagename)
     context['editpagename'] = editpagename
 
-    env = app.builder.env
-    if env.metadata.has_key(editpagename):
-        meta = env.metadata[editpagename]
-        if meta.has_key('editable') and meta['editable']:
-            css_files = context['css_files']
-            codemirror_css = '_static/codemirror2/lib/codemirror.css'
-            if not codemirror_css in css_files:
-                css_files.append(codemirror_css)
-            css_prefix = '_static/codemirror2/theme/'
-            for theme in ['cobalt', 'eclipse', 'elegant', 'monokai',
-                    'neat', 'night', 'rubyblue']:
-                theme_css = css_prefix + theme + '.css'
-                if not theme_css in css_files:
-                    css_files.append(theme_css)
-            context['css_files'] = css_files
-            script_files = context['script_files']
-            def add_script_file(path):
-                full_path = '_static/' + path
-                if not full_path in script_files:
-                    script_files.append(full_path)
-            add_script_file('codemirror2/lib/codemirror.js')
-            add_script_file('codemirror2/keymap/emacs.js')
-            add_script_file('codemirror2/keymap/vim.js')
-            add_script_file('codemirror2/mode/rst/rst.js')
-            add_script_file('vcwebedit.js')
-            context['script_files'] = script_files
+    if page_is_editable(app, pagename):
+        css_files = context['css_files']
+        codemirror_css = '_static/codemirror2/lib/codemirror.css'
+        if not codemirror_css in css_files:
+            css_files.append(codemirror_css)
+        css_prefix = '_static/codemirror2/theme/'
+        for theme in ['cobalt', 'eclipse', 'elegant', 'monokai',
+                'neat', 'night', 'rubyblue']:
+            theme_css = css_prefix + theme + '.css'
+            if not theme_css in css_files:
+                css_files.append(theme_css)
+        context['css_files'] = css_files
+        script_files = context['script_files']
+        def add_script_file(path):
+            full_path = '_static/' + path
+            if not full_path in script_files:
+                script_files.append(full_path)
+        add_script_file('codemirror2/lib/codemirror.js')
+        add_script_file('codemirror2/keymap/emacs.js')
+        add_script_file('codemirror2/keymap/vim.js')
+        add_script_file('codemirror2/mode/rst/rst.js')
+        add_script_file('vcwebedit.js')
+        context['script_files'] = script_files
+
 
 def generate_json_filelisting(app, pagename, templatename, context, doctree):
     """Create a JSON file in the _sources containing a list of editable
     files."""
-    editpagename = page_to_editpage(pagename)
-
     env = app.builder.env
-    if env.metadata.has_key(editpagename):
-        meta = env.metadata[editpagename]
-        if meta.has_key('editable') and meta['editable']:
-            pass
-            import ipdb; ipdb.set_trace()
-            original_pagename = page_to_editpage(pagename) + env.config.source_suffix
-            # app.outdir
+    if page_is_editable(app, pagename):
+        original_pagename = page_to_editpage(pagename) + env.config.source_suffix
+        output_dir = app.outdir + '/_sources'
+        files = [original_pagename.split('/')[-1]]
+        directories = []
+        if len(original_pagename.split('/')) > 1:
+            directories.append('..')
+            local_output_dirs = original_pagename.split('/')[:-1]
+            output_dir += '/' + '/'.join(local_output_dirs)
+
+        output_file = os.path.join(output_dir, 'directory_listing.json')
+        if os.path.exists(output_file):
+            with open(output_file, 'r') as existing:
+                decoder = json.JSONDecoder()
+                existing_content = decoder.decode(existing.read())
+                for existing_file in existing_content['files']:
+                    if not existing_file in files:
+                        files.append(existing_file)
+
+        directory_listing = {"files": files, "directories": directories}
+        encoder = json.JSONEncoder(sort_keys=True)
+        with open(output_file, 'w') as output:
+            output.write(encoder.encode(directory_listing))
+
+
+def purge_json_listing(app, env, docname):
+    """Remove the doc from the JSON file listing."""
+    original_pagename = docname + env.config.source_suffix
+    original_file = [original_pagename.split('/')[-1]]
+    output_dir = app.outdir + '/_sources'
+    if len(original_pagename.split('/')) > 1:
+        local_output_dirs = original_pagename.split('/')[:-1]
+        output_dir += '/' + '/'.join(local_output_dirs)
+
+    output_file = os.path.join(output_dir, 'directory_listing.json')
+    if os.path.exists(output_file):
+        with open(output_file, 'r') as existing:
+            decoder = json.JSONDecoder()
+            existing_content = decoder.decode(existing.read())
+            if original_file in existing_content['files']:
+                existing_content['files'].remove(original_file)
+                encoder = json.JSONEncoder(sort_keys=True)
+                with open(output_file, 'w') as output:
+                    output.write(encoder.encode(existing_content))
+
 
 def collect_edit_pages(app):
     """Add the edit pages to the HTML pages that will be rendered."""
@@ -106,6 +154,7 @@ def setup(app):
 
     app.connect('doctree-resolved', mark_all_editable)
     app.connect('env-purge-doc', purge_editable)
+    app.connect('env-purge-doc', purge_json_listing)
     app.connect('html-collect-pages', collect_edit_pages)
     app.connect('html-page-context', add_editpage_to_context)
     app.connect('html-page-context', generate_json_filelisting)

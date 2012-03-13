@@ -54,6 +54,33 @@ else:
     print("sphinx-build succeeded!")
 
 
+def test_json_directory_listing_output():
+    top_level_listing = os.path.join(build_dir, 'html', '_sources',
+            'directory_listing.json')
+    listing_file = open(top_level_listing, 'r')
+    listing_file_contents = listing_file.readline()
+    listing_file.close()
+    listing_file_baseline = """{"directories": [], "files": ["web_edit.rst", "configuration.rst", "index.rst"]}"""
+    def compare_contents(output, baseline):
+        if not output == baseline:
+            sys.stderr.write('Output:\n\t')
+            sys.stderr.write(output)
+            sys.stderr.write('\nBaseline:\n\t')
+            sys.stderr.write(baseline)
+            sys.stderr.write('\n\nOutput did not match the baseline\n')
+            sys.exit(1)
+    compare_contents(listing_file_contents, listing_file_baseline)
+    nested_level_listing = os.path.join(build_dir, 'html', '_sources',
+            'push_methods', 'directory_listing.json')
+    listing_file = open(nested_level_listing, 'r')
+    listing_file_contents = listing_file.readline()
+    listing_file.close()
+    listing_file_baseline = """{"directories": [".."], "files": ["push_methods.rst"]}"""
+    compare_contents(listing_file_contents, listing_file_baseline)
+
+test_json_directory_listing_output()
+
+
 print('Starting up the testing web server...')
 os.chdir(os.path.join(build_dir, 'html'))
 def serve_on_port(port):
