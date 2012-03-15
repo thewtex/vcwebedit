@@ -6,7 +6,6 @@ var vcw = vcw || {};
  */
 vcw.create_cookie = function ( cookie_name, value, expiration_days, path )
 {
-
   var expires = '';
   if( expiration_days )
     {
@@ -55,6 +54,16 @@ vcw.Editor = function()
       lineNumbers: true
       })];
 
+  // The buffers members holds all the files being edited.
+  this.buffers = [];
+
+  this.Buffer = function(original_path, original_buffer, modified_path, modified_buffer)
+    {
+    this.original_path = original_path;
+    this.original_buffer = original_buffer;
+    this.modified_path = modified_path;
+    this.modified_buffer = modified_buffer;
+    }
 }
 
 /** Get one of the internal CodeMirror editor instances.
@@ -82,11 +91,30 @@ vcw.Editor.prototype.loadFile = function( url, editorIdx )
     {
     editorIdx = 0;
     }
-
   var editor = this.codeMirrorEditors[editorIdx];
-  var data = $.get(url, function(data)
+
+  var ii;
+  var has_buf = new Boolean( false );
+  for( ii = 0; ii < this.buffers.length; ++ii )
+    {
+    if( this.buffers[ii].original_path == url )
+      {
+      has_buf = true;
+      break;
+      }
+    }
+  if( has_buf.valueOf() )
+    {
+    editor.setValue( this.buffers[ii].modified_buffer );
+    }
+
+  var Buffer = this.Buffer;
+  var buffers = this.buffers;
+  $.get(url, function( data )
     {
     editor.setValue( data );
+    var buf = new Buffer( url, data, url, data );
+    buffers.push( buf );
     });
 }
 
@@ -96,8 +124,8 @@ vcw.Editor.prototype.loadFile = function( url, editorIdx )
  *
  * Method on the Editor object.
  */
-vcw.Editor.prototype.selectKeymap = function( keymap )
-{
+vcw.Editor.prototype.selectKeymap = function( keymap ) {
+
   if( !keymap )
     {
     keymap = document.getElementById( "vcw.keymapSelection" ).value;
@@ -117,8 +145,8 @@ vcw.Editor.prototype.selectKeymap = function( keymap )
  *
  * Method on the Editor object.
  */
-vcw.Editor.prototype.selectTheme = function( theme )
-{
+vcw.Editor.prototype.selectTheme = function( theme ) {
+
   if( !theme )
     {
     theme = document.getElementById( "vcw.themeSelection" ).value;
@@ -130,6 +158,15 @@ vcw.Editor.prototype.selectTheme = function( theme )
     this.codeMirrorEditors[ii].setOption( "theme", theme );
     }
   vcw.create_cookie( "vcw.editor.theme", theme, 365 );
+}
+
+/** Generate a patch from the modified files.
+ *
+ * Returns a unified diff with version control metadata
+ *
+ * Method on the Editor object.
+ */
+vcw.Editor.prototype.generatePatch = function() {
 }
 
 function vcw_savePatchLocally()
