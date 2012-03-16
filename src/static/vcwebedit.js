@@ -166,7 +166,22 @@ vcw.Editor.prototype.selectTheme = function( theme ) {
  *
  * Method on the Editor object.
  */
-vcw.Editor.prototype.generatePatch = function() {
+vcw.Editor.prototype.generatePatch = function()
+{
+  var patch = "";
+  var ii;
+  var buf;
+  var old_header;
+  var new_header;
+  for( ii = 0; ii < this.buffers.length; ++ii )
+    {
+    buf = this.buffers[ii];
+    old_header = "a/" + buf.original_path;
+    new_header = "b/" + buf.modified_path;
+    patch += JsDiff.createPatch( buf.original_path, buf.original_buffer, buf.modified_buffer, old_header, new_header );
+    }
+
+  return patch;
 }
 
 function vcw_savePatchLocally()
