@@ -17,15 +17,42 @@
 {%- endblock %}
 {% block body %}
           {{ super() }}
+          {%- block editor %}
           <h2>Editor</h2>
-          <div id="editor">
+          <div id="vcw.editor">
            {{ pathto('_sources/' + editsourcename, true)|e }}
           </div>
+          {%- endblock %}
+          {%- block patch %}
+          <h2>Patch</h2>
+          <form><table>
+            <tr align="left">
+              <td valign="top">Commit message:</td>
+              <td><div style="border-style:inset;border-width:2px;height:15em;width:39em" id="vcw.commitMessage"></div></td>
+            </tr>
+            <tr align="left">
+              <td>Author name:</td>
+              <td><input type="text" name="authorName"/></td>
+            </tr>
+            <tr align="left">
+              <td>Author email:</td>
+              <td><input type="text" name="authorEmail"/></td>
+            </tr>
+            <tr align="left">
+              <td></td>
+              <td><input type="button" name="patchPreview" value="Preview patch"/></td>
+              <td><input type="button" name="patchSave" value="Save patch locally"/></td>
+              <td><input type="button" name="patchSubmit" value="Submit patch"/></td>
+            </tr>
+          </table></form>
+          {%- endblock %}
 
           <script type="text/javascript">
             // global editor variable
             editor = new vcw.Editor();
+            // Load the ReST file for this page.
             editor.loadFile("{{ pathto('_sources/' + editsourcename, true)|e }}");
+
             function initializeWindow()
               {
               // Use the keymap cookie.

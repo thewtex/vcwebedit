@@ -45,14 +45,20 @@ vcw.read_cookie = function ( desired_cookie_name )
 vcw.Editor = function()
 {
   // Clear the default, which is the path to the document.
-  $('#editor').html("");
+  $('#vcw.editor').html("");
 
   // Start with one empty editor.
-  this.codeMirrorEditors = [CodeMirror( document.getElementById("editor"), {
+  this.codeMirrorEditors = [CodeMirror( document.getElementById( "vcw.editor" ), {
       mode:  "rst",
       lineWrapping: true,
       lineNumbers: true
       })];
+
+  this.commitMessageEditor = CodeMirror( document.getElementById( "vcw.commitMessage" ), {
+    lineWrapping: true,
+    mode: "text/plain"
+    });
+
 
   // The buffers members holds all the files being edited.
   this.buffers = [];
@@ -136,6 +142,7 @@ vcw.Editor.prototype.selectKeymap = function( keymap ) {
     {
     this.codeMirrorEditors[ii].setOption( "keyMap", keymap );
     }
+  //this.commitMessageEditor.setOption( "keyMap", keymap );
   vcw.create_cookie( "vcw.editor.keymap", keymap, 365 );
 }
 
@@ -157,6 +164,7 @@ vcw.Editor.prototype.selectTheme = function( theme ) {
     {
     this.codeMirrorEditors[ii].setOption( "theme", theme );
     }
+  //this.commitMessageEditor.setOption( "theme", theme );
   vcw.create_cookie( "vcw.editor.theme", theme, 365 );
 }
 
