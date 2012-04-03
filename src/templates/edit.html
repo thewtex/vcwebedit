@@ -10,7 +10,7 @@
 {% extends "layout.html" %}
 {%- block extrahead %}
     {# A larger default height for the editor. #}
-    <style type="text/css">.CodeMirror-scroll { height: 500px; }</style>
+    <style type="text/css"> .CodeMirror-scroll { height: 500px; overflow: scroll; } </style>
     {# Fix for the cursor height. #}
     <style type="text/css">.CodeMirror pre.CodeMirror-cursor { height:1.3em; }</style>
     {{ super() }}
@@ -20,14 +20,16 @@
           {%- block editor %}
           <h2>Editor</h2>
           <div id="vcw.editor">
-           {{ pathto('_sources/' + editsourcename, true)|e }}
           </div>
           {%- endblock %}
           {%- block patch %}
           <h2>Patch</h2>
           <form>
             Commit message:<br/>
-            <div style="border-style:inset;border-width:2px;height:15em;width:39em" id="vcw.commitMessage"></div>
+            <div style="border-style:inset;border-width:2px;">
+              <div id="vcw.commitMessage">
+              </div>
+            </div>
             <table>
             <tr align="left">
               <td>Author name:</td>
@@ -39,11 +41,20 @@
             </tr>
             <tr align="left">
               <td></td>
-              <td><input type="button" name="patchPreview" value="Preview patch"/></td>
+              <td><input type="button" name="patchPreview" value="Preview patch"
+                onclick="editor.previewPatch()"/></td>
               <td><input type="button" name="patchSave" value="Save patch locally"/></td>
               <td><input type="button" name="patchSubmit" value="Submit patch"/></td>
             </tr>
           </table></form>
+          {%- endblock %}
+          {%- block patch_preview %}
+          <div id="vcw.patchPreviewSection" style="display:none;">
+            <h2>Patch preview</h2>
+            <div style="border-style:inset;border-width:2px;">
+              <div id="vcw.patchPreviewText"></div>
+            </div>
+          </div>
           {%- endblock %}
 
           <script type="text/javascript">

@@ -4,8 +4,7 @@ var vcw = vcw || {};
 
 /** Create a browser cookie.  If path is not set, then it defaults to '/'.
  */
-vcw.create_cookie = function ( cookie_name, value, expiration_days, path )
-{
+vcw.create_cookie = function ( cookie_name, value, expiration_days, path ) {
   var expires = '';
   if( expiration_days )
     {
@@ -21,8 +20,7 @@ vcw.create_cookie = function ( cookie_name, value, expiration_days, path )
   document.cookie = cookie_name + '=' + escape( value ) + expires + path_entry
 }
 
-vcw.read_cookie = function ( desired_cookie_name )
-{
+vcw.read_cookie = function ( desired_cookie_name ) {
   var cookies = document.cookie.split(';');
   var cookie_name;
   var cookie_value;
@@ -42,8 +40,7 @@ vcw.read_cookie = function ( desired_cookie_name )
 }
 
 /** Editor object.  Manages multiple CodeMirror editors. */
-vcw.Editor = function()
-{
+vcw.Editor = function() {
   // Clear the default, which is the path to the document.
   $('#vcw.editor').html("");
 
@@ -58,7 +55,13 @@ vcw.Editor = function()
     lineWrapping: true,
     mode: "text/plain"
     });
+  this.commitMessageEditor.getScrollerElement().style.height = "15em";
 
+  this.patchPreviewEditor = CodeMirror.fromTextArea( document.getElementById( "vcw.patchPreviewText" ), {
+    lineWrapping: true,
+    mode: "text/plain",
+    readOnly: "nocursor"
+    });
 
   // The buffers members holds all the files being edited.
   this.buffers = [];
@@ -78,8 +81,7 @@ vcw.Editor = function()
  *
  * Method on the Editor object.
  */
-vcw.Editor.prototype.getCodeMirror = function( idx )
-{
+vcw.Editor.prototype.getCodeMirror = function( idx ) {
   if( !idx )
     {
     idx = 0;
@@ -91,8 +93,7 @@ vcw.Editor.prototype.getCodeMirror = function( idx )
  *
  * Method on the Editor object.
  */
-vcw.Editor.prototype.loadFile = function( url, editorIdx )
-{
+vcw.Editor.prototype.loadFile = function( url, editorIdx ) {
   if( editorIdx == null )
     {
     editorIdx = 0;
@@ -131,7 +132,6 @@ vcw.Editor.prototype.loadFile = function( url, editorIdx )
  * Method on the Editor object.
  */
 vcw.Editor.prototype.selectKeymap = function( keymap ) {
-
   if( !keymap )
     {
     keymap = document.getElementById( "vcw.keymapSelection" ).value;
@@ -142,7 +142,7 @@ vcw.Editor.prototype.selectKeymap = function( keymap ) {
     {
     this.codeMirrorEditors[ii].setOption( "keyMap", keymap );
     }
-  //this.commitMessageEditor.setOption( "keyMap", keymap );
+  this.commitMessageEditor.setOption( "keyMap", keymap );
   vcw.create_cookie( "vcw.editor.keymap", keymap, 365 );
 }
 
@@ -164,7 +164,8 @@ vcw.Editor.prototype.selectTheme = function( theme ) {
     {
     this.codeMirrorEditors[ii].setOption( "theme", theme );
     }
-  //this.commitMessageEditor.setOption( "theme", theme );
+  this.commitMessageEditor.setOption( "theme", theme );
+  this.patchPreviewEditor.setOption( "theme", theme );
   vcw.create_cookie( "vcw.editor.theme", theme, 365 );
 }
 
@@ -174,8 +175,7 @@ vcw.Editor.prototype.selectTheme = function( theme ) {
  *
  * Method on the Editor object.
  */
-vcw.Editor.prototype.generatePatch = function()
-{
+vcw.Editor.prototype.generatePatch = function() {
   var patch = "";
   var ii;
   var buf;
@@ -192,8 +192,21 @@ vcw.Editor.prototype.generatePatch = function()
   return patch;
 }
 
-function vcw_savePatchLocally()
-{
+/** Create a preview of the patch.
+ *
+ * Shows the patch preview div and the patch content.
+ *
+ * Method on the Editor object.
+ */
+vcw.Editor.prototype.previewPatch = function () {
+  var previewSection = document.getElementById( "vcw.patchPreviewSection" );
+  previewSection.style.display = "block";
+
+  var patch = this.generatePatch();
+  this.patchPreviewEditor.setValue( patch );
+}
+
+function vcw_savePatchLocally() {
    var input = 'Welcome to the National Library of Medicine Insight Segmentation and Registration Toolkit (ITK).\n' +
               'ITK is an open-source, cross-platform system that provides developers with an extensive suite of software tools for image analysis.\n' +
               'Developed through extreme programming methodologies, ITK employs leading-edge algorithms for registering and segmenting multidimensional data.\n' +
