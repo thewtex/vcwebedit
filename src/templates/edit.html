@@ -24,7 +24,7 @@
           {%- endblock %}
           {%- block patch %}
           <h2>Patch</h2>
-          <form>
+          <form id="patchForm">
             Commit message:<br/>
             <div style="border-style:inset;border-width:2px;">
               <div id="vcw.commitMessage">
@@ -34,6 +34,8 @@
             <tr align="left">
               <td>Author name:</td>
               <td><input type="text" name="authorName"/></td>
+              <td></td>
+              <td id="vcw.errorMessage" class="system-message" style="display:none;"></td>
             </tr>
             <tr align="left">
               <td>Author email:</td>
@@ -43,8 +45,8 @@
               <td></td>
               <td><input type="button" name="patchPreview" value="Preview patch"
                 onclick="editor.previewPatch()"/></td>
-              <td><input type="button" name="patchSave" value="Save patch locally"/></td>
-              <td><input type="button" name="patchSubmit" value="Submit patch"/></td>
+              <td><input type="button" name="patchSave"    value="Save patch locally"/></td>
+              <td><input type="button" name="patchSubmit"  value="Submit patch"/></td>
             </tr>
           </table></form>
           {%- endblock %}

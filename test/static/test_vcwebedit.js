@@ -72,7 +72,28 @@ vcw.run_tests = function()
     var buffer = new editor.Buffer(filename, input1, filename, input2 );
     this.editor.buffers.push( buffer );
 
+    // No commit message -- error!
     var patch = this.editor.generatePatch();
+    expect( patch, null, "No patch without a commit message." );
+    var commitMessage = 'A short summary of the patch.\n\n' +
+      'A longer description of the patch.  This explanation will usually take up a\n' +
+      'couple of lines.\n\n' +
+      'It can also be made of multiple paragraphs.';
+    this.editor.commitMessageEditor.setValue( commitMessage );
+
+    var form = document.getElementById( "patchForm" );
+
+    // No author name -- error!
+    patch = this.editor.generatePatch();
+    expect( patch, null, "No patch without an author name." );
+    form.authorName.value = "Eric Corley";
+
+    // No author email -- error!
+    patch = this.editor.generatePatch();
+    expect( patch, null, "No patch without an author email." );
+    form.authorEmail.value = "kevin.mitnick@2600.com";
+
+    patch = this.editor.generatePatch();
     var expected = 'Index: filename_diff.cxx\n' +
       '===================================================================\n' +
       '--- filename_diff.cxx\ta/filename_diff.cxx\n' +
@@ -101,6 +122,22 @@ vcw.run_tests = function()
     var codeMirror = this.editor.getCodeMirror(0);
     var previewSection = document.getElementById( "vcw.patchPreviewSection" );
     equal( previewSection.style.display, "none", "Preview section starts hidden." );
+
+    // fill in some content
+    var form = document.getElementById( "patchForm" );
+    form.authorName.value = "Eric Corley";
+    form.authorEmail.value = "kevin.mitnick@2600.com";
+    var commitMessage = 'A short summary of the patch.\n\n' +
+      'A longer description of the patch.  This explanation will usually take up a\n' +
+      'couple of lines.\n\n' +
+      'It can also be made of multiple paragraphs.';
+    this.editor.commitMessageEditor.setValue( commitMessage );
+    var filename = "mymod.py";
+    var input1 = "input this";
+    var input2 = "input that";
+    var buffer = new editor.Buffer(filename, input1, filename, input2 );
+    this.editor.buffers.push( buffer );
+
     this.editor.previewPatch();
     equal( previewSection.style.display, "block", "Preview section becomes visible." );
     }

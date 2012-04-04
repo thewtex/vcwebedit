@@ -53,9 +53,11 @@ vcw.Editor = function() {
 
   this.commitMessageEditor = CodeMirror( document.getElementById( "vcw.commitMessage" ), {
     lineWrapping: true,
-    mode: "text/plain"
+    mode: "text/plain",
+    value: ""
     });
   this.commitMessageEditor.getScrollerElement().style.height = "15em";
+  this.commitMessageEditor.refresh();
 
   this.patchPreviewEditor = CodeMirror.fromTextArea( document.getElementById( "vcw.patchPreviewText" ), {
     lineWrapping: true,
@@ -177,6 +179,35 @@ vcw.Editor.prototype.selectTheme = function( theme ) {
  */
 vcw.Editor.prototype.generatePatch = function() {
   var patch = "";
+
+  var errorMessage = document.getElementById( "vcw.errorMessage" );
+
+  var commitMessage = this.commitMessageEditor.getValue();
+  if( ! commitMessage )
+    {
+    errorMessage.innerHTML = "Please enter a commit message.";
+    errorMessage.style.display = "block";
+    return null;
+    }
+
+  var form = document.getElementById( "patchForm" );
+
+  var authorName = form.authorName.value;
+  if( ! authorName )
+    {
+    errorMessage.innerHTML = "Please enter an author name.";
+    errorMessage.style.display = "block";
+    return null;
+    }
+
+  var authorEmail = form.authorEmail.value;
+  if( ! authorEmail )
+    {
+    errorMessage.innerHTML = "Please enter an author email.";
+    errorMessage.style.display = "block";
+    return null;
+    }
+
   var ii;
   var buf;
   var old_header;
@@ -189,6 +220,8 @@ vcw.Editor.prototype.generatePatch = function() {
     patch += JsDiff.createPatch( buf.original_path, buf.original_buffer, buf.modified_buffer, old_header, new_header );
     }
 
+  errorMessage.style.display = "none";
+
   return patch;
 }
 
@@ -199,11 +232,14 @@ vcw.Editor.prototype.generatePatch = function() {
  * Method on the Editor object.
  */
 vcw.Editor.prototype.previewPatch = function () {
-  var previewSection = document.getElementById( "vcw.patchPreviewSection" );
-  previewSection.style.display = "block";
-
   var patch = this.generatePatch();
-  this.patchPreviewEditor.setValue( patch );
+  if( patch )
+    {
+    var previewSection = document.getElementById( "vcw.patchPreviewSection" );
+    previewSection.style.display = "block";
+
+    this.patchPreviewEditor.setValue( patch );
+    }
 }
 
 function vcw_savePatchLocally() {
