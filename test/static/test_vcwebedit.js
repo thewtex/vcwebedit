@@ -10,8 +10,7 @@ vcw.run_tests = function()
 
   module( "Utility functions." );
 
-  test( 'vcw cookie functions', function()
-    {
+  test( 'vcw cookie functions', function() {
     vcw.create_cookie( "vcw_test_cookie", "monster" );
     var cookie = vcw.read_cookie( "vcw_test_cookie" );
     equal( cookie, "monster", "Cookie create/read test." );
@@ -21,16 +20,14 @@ vcw.run_tests = function()
   );
 
   // Setup for a test.
-  function setupCreateEditor()
-    {
+  function setupCreateEditor() {
     this.editor = new vcw.Editor()
     ok( this.editor, "Editor created." );
     }
 
 
   module( "Editor.", { setup: setupCreateEditor } );
-  test( "Editor.selectKeymap()", function()
-    {
+  test( "Editor.selectKeymap()", function() {
     var previousKeymap = vcw.read_cookie( "vcw.editor.keymap" );
     this.editor.selectKeymap( "emacs" );
     var codeMirror = this.editor.getCodeMirror(0);
@@ -42,8 +39,7 @@ vcw.run_tests = function()
     }
   );
 
-  test( "Editor.selectTheme()", function()
-    {
+  test( "Editor.selectTheme()", function() {
     var previousTheme = vcw.read_cookie( "vcw.editor.theme" );
     this.editor.selectTheme( "monokai" );
     var codeMirror = this.editor.getCodeMirror(0);
@@ -55,8 +51,7 @@ vcw.run_tests = function()
     }
   );
 
-  test( "Editor.generatePatch()", function()
-    {
+  test( "Editor.generatePatch()", function() {
     var codeMirror = this.editor.getCodeMirror(0);
     var filename = "filename_diff.cxx";
     var input1 = 'Welcome to the National Library of Medicine Insight Segmentation and Registration Toolkit (ITK).\n' +
@@ -99,6 +94,15 @@ vcw.run_tests = function()
       '- * Grow a self-sustaining community of software users and developers.\n' +
       '\\ No newline at end of file\n';
     equal( patch, expected, "The generated patch did what was expected." );
+    }
+  );
+
+  test( "Editor.previewPatch()", function() {
+    var codeMirror = this.editor.getCodeMirror(0);
+    var previewSection = document.getElementById( "vcw.patchPreviewSection" );
+    equal( previewSection.style.display, "none", "Preview section starts hidden." );
+    this.editor.previewPatch();
+    equal( previewSection.style.display, "block", "Preview section becomes visible." );
     }
   );
 }; // end vcw.run_tests()
