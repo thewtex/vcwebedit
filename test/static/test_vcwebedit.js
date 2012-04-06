@@ -94,7 +94,20 @@ vcw.run_tests = function()
     form.authorEmail.value = "kevin.mitnick@2600.com";
 
     patch = this.editor.generatePatch();
-    var expected = 'Index: filename_diff.cxx\n' +
+
+    var authorExpected = 'Author:  Eric Corley <kevin.mitnick@2600.com>';
+    var authorReceived = patch.split( '\n', 1 );
+    equal( authorReceived[0], authorExpected, 'Author line in the patch.' );
+
+    var firstTwoLines = patch.split( '\n', 2 );
+    var theRestStart = firstTwoLines[0].length + firstTwoLines[1].length + 2;
+
+    var expected = 'Subject: [PATCH] A short summary of the patch.\n\n' +
+      'A longer description of the patch.  This explanation will usually take up a\n' +
+      'couple of lines.\n\n' +
+      'It can also be made of multiple paragraphs.\n' +
+      '---\n' +
+      'Index: filename_diff.cxx\n' +
       '===================================================================\n' +
       '--- filename_diff.cxx\ta/filename_diff.cxx\n' +
       '+++ filename_diff.cxx\tb/filename_diff.cxx\n' +
@@ -114,7 +127,7 @@ vcw.run_tests = function()
       '- * Create conventions for future work.\n' +
       '- * Grow a self-sustaining community of software users and developers.\n' +
       '\\ No newline at end of file\n';
-    equal( patch, expected, "The generated patch did what was expected." );
+    equal( patch.substr( theRestStart ), expected, "The generated patch did what was expected." );
     }
   );
 

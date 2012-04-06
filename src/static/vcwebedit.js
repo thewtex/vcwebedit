@@ -178,8 +178,6 @@ vcw.Editor.prototype.selectTheme = function( theme ) {
  * Method on the Editor object.
  */
 vcw.Editor.prototype.generatePatch = function() {
-  var patch = "";
-
   var errorMessage = document.getElementById( "vcw.errorMessage" );
 
   var commitMessage = this.commitMessageEditor.getValue();
@@ -207,6 +205,47 @@ vcw.Editor.prototype.generatePatch = function() {
     errorMessage.style.display = "block";
     return null;
     }
+
+  var patch = '';
+  patch += 'Author:  ' + authorName + ' <' + authorEmail + '>\n';
+  var currentDate = new Date();
+  var daysOfTheWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  patch += 'Date:    ' + daysOfTheWeek[currentDate.getUTCDay()];
+  patch += ', ' + currentDate.getUTCDate() + ' ' + currentDate.getUTCFullYear();
+  patch += ' ' + currentDate.getUTCFullYear();
+  var hours = currentDate.getUTCHours();
+  if( hours < 10 )
+    {
+    patch += '0';
+    }
+  patch += hours + ':';
+  var minutes = currentDate.getUTCMinutes();
+  if( minutes < 10 )
+    {
+    patch += '0';
+    }
+  patch += minutes + ':';
+  var seconds = currentDate.getUTCSeconds();
+  if( seconds < 10 )
+    {
+    patch += '0';
+    }
+  patch += seconds;
+  var timezoneOffset = currentDate.getTimezoneOffset();
+  if( timezoneOffset < 0 )
+    {
+    patch += '0';
+    }
+  else
+    {
+    patch += '-0';
+    }
+  patch += timezoneOffset / -60 + '00\n';
+
+  patch += 'Subject: [PATCH] ' + commitMessage;
+  patch += '\n---\n';
 
   var ii;
   var buf;
