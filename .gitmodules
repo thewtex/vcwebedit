@@ -6,4 +6,7 @@
 	url = https://github.com/jquery/qunit.git
 [submodule "doc/proBlue"]
 	path = doc/proBlue
-	url = https://github.com/kellycreativetech/proBlue.git
+	url = https://github.com/thewtex/proBlue.git
+[submodule "src/static/jsdiff"]
+	path = src/static/jsdiff
+	url = https://github.com/kpdecker/jsdiff.git

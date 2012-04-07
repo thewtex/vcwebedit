@@ -10,22 +10,61 @@
 {% extends "layout.html" %}
 {%- block extrahead %}
     {# A larger default height for the editor. #}
-    <style type="text/css">.CodeMirror-scroll { height: 500px; }</style>
+    <style type="text/css"> .CodeMirror-scroll { height: 500px; overflow: scroll; } </style>
     {# Fix for the cursor height. #}
     <style type="text/css">.CodeMirror pre.CodeMirror-cursor { height:1.3em; }</style>
     {{ super() }}
 {%- endblock %}
 {% block body %}
           {{ super() }}
+          {%- block editor %}
           <h2>Editor</h2>
-          <div id="editor">
-           {{ pathto('_sources/' + editsourcename, true)|e }}
+          <div id="vcw.editor">
           </div>
+          {%- endblock %}
+          {%- block patch %}
+          <h2>Patch</h2>
+          <form id="patchForm">
+            Commit message:<br/>
+            <div style="border-style:inset;border-width:2px;">
+              <div id="vcw.commitMessage">
+              </div>
+            </div>
+            <table>
+            <tr align="left">
+              <td>Author name:</td>
+              <td><input type="text" name="authorName"/></td>
+              <td></td>
+              <td id="vcw.errorMessage" class="system-message" style="display:none;"></td>
+            </tr>
+            <tr align="left">
+              <td>Author email:</td>
+              <td><input type="text" name="authorEmail"/></td>
+            </tr>
+            <tr align="left">
+              <td></td>
+              <td><input type="button" name="patchPreview" value="Preview patch"
+                onclick="editor.previewPatch()"/></td>
+              <td><input type="button" name="patchSave"    value="Save patch locally"/></td>
+              <td><input type="button" name="patchSubmit"  value="Submit patch"/></td>
+            </tr>
+          </table></form>
+          {%- endblock %}
+          {%- block patch_preview %}
+          <div id="vcw.patchPreviewSection" style="display:none;">
+            <h2>Patch preview</h2>
+            <div style="border-style:inset;border-width:2px;">
+              <div id="vcw.patchPreviewText"></div>
+            </div>
+          </div>
+          {%- endblock %}
 
           <script type="text/javascript">
             // global editor variable
             editor = new vcw.Editor();
+            // Load the ReST file for this page.
             editor.loadFile("{{ pathto('_sources/' + editsourcename, true)|e }}");
+
             function initializeWindow()
               {
               // Use the keymap cookie.
