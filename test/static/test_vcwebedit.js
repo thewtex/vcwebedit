@@ -29,9 +29,9 @@ vcw.run_tests = function()
   module( "Editor.", { setup: setupCreateEditor } );
   test( "Editor.selectKeymap()", function() {
     var previousKeymap = vcw.read_cookie( "vcw.editor.keymap" );
-    this.editor.selectKeymap( "emacs" );
+    this.editor.selectKeymap( "vim" );
     var codeMirror = this.editor.getCodeMirror(0);
-    equal( codeMirror.getOption( "keyMap" ), "emacs", "Keymap selection changed CodeMirror option." );
+    equal( codeMirror.getOption( "keyMap" ), "vim", "Keymap selection changed CodeMirror option." );
     if( previousKeymap )
       {
       vcw.create_cookie( "vcw.editor.keymap", previousKeymap, 365 );
@@ -41,9 +41,9 @@ vcw.run_tests = function()
 
   test( "Editor.selectTheme()", function() {
     var previousTheme = vcw.read_cookie( "vcw.editor.theme" );
-    this.editor.selectTheme( "monokai" );
+    this.editor.selectTheme( "elegant" );
     var codeMirror = this.editor.getCodeMirror(0);
-    equal( codeMirror.getOption( "theme" ), "monokai", "Theme selection changed CodeMirror option." );
+    equal( codeMirror.getOption( "theme" ), "elegant", "Theme selection changed CodeMirror option." );
     if( previousTheme )
       {
       vcw.create_cookie( "vcw.editor.theme", previousTheme, 365 );
