@@ -8,6 +8,10 @@
 
 #}
 {% extends "layout.html" %}
+{#- We go with HTML5 for the FileWriter capability (and because we're hip). #}
+{%- block doctype %}
+<!DOCTYPE html>
+{%- endblock %}
 {%- block extrahead %}
     {# A larger default height for the editor. #}
     <style type="text/css"> .CodeMirror-scroll { height: 500px; overflow: scroll; } </style>
