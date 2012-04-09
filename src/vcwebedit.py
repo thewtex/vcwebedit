@@ -90,6 +90,7 @@ def collect_edit_pages(app):
 
 def setup(app):
     app.add_config_value('vcwebedit_all_editable', True, True)
+    app.add_stylesheet('vcwebedit.css')
 
     app.connect('doctree-resolved', mark_all_editable)
     app.connect('env-purge-doc', purge_editable)

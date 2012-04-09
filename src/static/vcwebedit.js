@@ -1,7 +1,6 @@
 // Everything lives in the vcw namespace.
 var vcw = vcw || {};
 
-
 /** Create a browser cookie.  If path is not set, then it defaults to '/'.
  */
 vcw.create_cookie = function ( cookie_name, value, expiration_days, path ) {
@@ -39,6 +38,44 @@ vcw.read_cookie = function ( desired_cookie_name ) {
   return null;
 }
 
+/** Set whether the patch is ready to save to file.
+ *
+ * If the content of the patch changes, then the blob to save to file must be
+ * regenerated.  The buttons to save the patch to file or submit the patch are
+ * disabled until the prepare patch button is clicked.
+ *
+ * \param ready boolean */
+vcw.setReadyToSave = function( ready ) {
+  var outputsDisabled;
+  if( ready )
+    {
+    $( '#saveToFile' ).fadeTo( 'fast', 1.0 );
+    $( '#submitPatch' ).fadeTo( 'fast', 1.0 );
+    outputsDisabled = true;
+    }
+  else
+    {
+    if( !outputsDisabled )
+      {
+      var saveToFile = document.getElementById( 'saveToFile' );
+      // Turn off the patch output buttons if needed.
+      if( saveToFile.href && BlobBuilder )
+        {
+        window.URL.revokeObjectURL( saveToFile.href );
+        saveToFile.href = null;
+        }
+      $( '#saveToFile' ).fadeTo( 'fast', 0.3 );
+      $( '#submitPatch' ).fadeTo( 'fast', 0.3 );
+      }
+    }
+}
+
+
+/** Callback for when the patch content changes. */
+vcw.patchContentChanged = function() {
+  vcw.setReadyToSave( false );
+}
+
 /** Editor object.  Manages multiple CodeMirror editors. */
 vcw.Editor = function() {
   // Clear the default, which is the path to the document.
@@ -48,13 +85,15 @@ vcw.Editor = function() {
   this.codeMirrorEditors = [CodeMirror( document.getElementById( "vcw.editor" ), {
       mode:  "rst",
       lineWrapping: true,
-      lineNumbers: true
+      lineNumbers: true,
+      onChange: vcw.patchContentChanged
       })];
 
   this.commitMessageEditor = CodeMirror( document.getElementById( "vcw.commitMessage" ), {
     lineWrapping: true,
     mode: "text/plain",
-    value: ""
+    value: "",
+    onChange: vcw.patchContentChanged
     });
   this.commitMessageEditor.getScrollerElement().style.height = "15em";
   this.commitMessageEditor.refresh();
@@ -80,8 +119,6 @@ vcw.Editor = function() {
 /** Get one of the internal CodeMirror editor instances.
  *
  * \param idx The index of the CodeMirror instance.  Defaults to 0.
- *
- * Method on the Editor object.
  */
 vcw.Editor.prototype.getCodeMirror = function( idx ) {
   if( !idx )
@@ -92,8 +129,6 @@ vcw.Editor.prototype.getCodeMirror = function( idx ) {
 }
 
 /** Load a file into the editor.
- *
- * Method on the Editor object.
  */
 vcw.Editor.prototype.loadFile = function( url, editorIdx ) {
   if( editorIdx == null )
@@ -130,8 +165,6 @@ vcw.Editor.prototype.loadFile = function( url, editorIdx ) {
 /** Select a different keymap.
  *
  * Uses the keymap argument or the values of the element with id vcw.keymapSelection
- *
- * Method on the Editor object.
  */
 vcw.Editor.prototype.selectKeymap = function( keymap ) {
   if( !keymap )
@@ -151,8 +184,6 @@ vcw.Editor.prototype.selectKeymap = function( keymap ) {
 /** Select a different theme.
  *
  * Uses the theme argument or the values of the element with id vcw.themeSelection
- *
- * Method on the Editor object.
  */
 vcw.Editor.prototype.selectTheme = function( theme ) {
 
@@ -174,8 +205,6 @@ vcw.Editor.prototype.selectTheme = function( theme ) {
 /** Generate a patch from the modified files.
  *
  * Returns a unified diff with version control metadata
- *
- * Method on the Editor object.
  */
 vcw.Editor.prototype.generatePatch = function() {
   var errorMessage = document.getElementById( "vcw.errorMessage" );
@@ -259,7 +288,33 @@ vcw.Editor.prototype.generatePatch = function() {
     patch += JsDiff.createPatch( buf.original_path, buf.original_buffer, buf.modified_buffer, old_header, new_header );
     }
 
+  if( BlobBuilder )
+    {
+    var saveToFile = document.getElementById( 'saveToFile' );
+    if( saveToFile.href )
+      {
+      window.URL.revokeObjectURL( saveToFile.href );
+      }
+    var firstLine = commitMessage.split( '\n', 1 );
+    var fileName = firstLine[0].replace( / /g, '-' );
+    if( fileName.substr( firstLine.length - 1 ) === '.' )
+      {
+      fileName += 'patch';
+      }
+    else
+      {
+      fileName += '.patch';
+      }
+
+    saveToFile.download = fileName;
+    var blobBuilder = new BlobBuilder();
+    blobBuilder.append(patch);
+    var blobURLref = window.URL.createObjectURL(blobBuilder.getBlob());
+    saveToFile.href = blobURLref;
+    }
+
   errorMessage.style.display = "none";
+  vcw.setReadyToSave( true );
 
   return patch;
 }
@@ -267,15 +322,14 @@ vcw.Editor.prototype.generatePatch = function() {
 /** Create a preview of the patch.
  *
  * Shows the patch preview div and the patch content.
- *
- * Method on the Editor object.
  */
 vcw.Editor.prototype.previewPatch = function () {
   var patch = this.generatePatch();
   if( patch )
     {
-    var previewSection = document.getElementById( "vcw.patchPreviewSection" );
+    var previewSection = document.getElementById( "patchPreviewSection" );
     previewSection.style.display = "block";
+    $( '#patchPreviewSection' ).fadeIn();
 
     this.patchPreviewEditor.setValue( patch );
     }

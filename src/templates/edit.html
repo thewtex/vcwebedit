@@ -37,25 +37,26 @@
             <table>
             <tr align="left">
               <td>Author name:</td>
-              <td><input type="text" name="authorName"/></td>
+              <td><input type="text" name="authorName" oninput="vcw.patchContentChanged()"/></td>
               <td></td>
               <td id="vcw.errorMessage" class="system-message" style="display:none;"></td>
             </tr>
             <tr align="left">
               <td>Author email:</td>
-              <td><input type="text" name="authorEmail"/></td>
+              <td><input type="text" name="authorEmail" oninput="vcw.patchContentChanged()"/></td>
             </tr>
             <tr align="left">
               <td></td>
-              <td><input type="button" name="patchPreview" value="Preview patch"
-                onclick="editor.previewPatch()"/></td>
-              <td><input type="button" name="patchSave"    value="Save patch locally"/></td>
-              <td><input type="button" name="patchSubmit"  value="Submit patch"/></td>
+              <td><a class="patchGeneration"
+                    onclick="editor.previewPatch()"/>Prepare patch</a></td>
+              <td><a id="saveToFile" class="patchGeneration">Save patch locally</a></td>
+              <td><a id="submitPatch" class="patchGeneration"
+                    onclick="alert('Not implemented yet!')">Submit patch</a></td>
             </tr>
           </table></form>
           {%- endblock %}
           {%- block patch_preview %}
-          <div id="vcw.patchPreviewSection" style="display:none;">
+          <div id="patchPreviewSection" style="display:none;">
             <h2>Patch preview</h2>
             <div style="border-style:inset;border-width:2px;">
               <div id="vcw.patchPreviewText"></div>
@@ -85,6 +86,17 @@
                 document.getElementById( "vcw.themeSelection" ).value = theme;
                 editor.selectTheme( theme );
                 }
+              window.URL = window.webkitURL || window.URL;
+              window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder;
+              if( !window.URL || !window.BlobBuilder )
+                {
+                // Saving the patch to a file will not work without these HTML5
+                // features present.
+                var saveToFile = document.getElementById( 'saveToFile' );
+                saveToFile.style.display = 'none';
+                }
+              // Disable the patch outputs.
+              vcw.setReadyToSave( false );
               }
             if( window.onload )
               {

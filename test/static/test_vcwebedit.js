@@ -133,7 +133,7 @@ vcw.run_tests = function()
 
   test( "Editor.previewPatch()", function() {
     var codeMirror = this.editor.getCodeMirror(0);
-    var previewSection = document.getElementById( "vcw.patchPreviewSection" );
+    var previewSection = document.getElementById( "patchPreviewSection" );
     equal( previewSection.style.display, "none", "Preview section starts hidden." );
 
     // fill in some content
