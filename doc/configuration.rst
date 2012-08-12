@@ -60,7 +60,7 @@ entry in your `conf.py` to `False` (defaults to `True`)::
 
   vcwebedit_all_editable = False
 
-Next, configure your `push method <push_methods>`_.
+Next, configure `a server to accept patches <accept_patches>`_.
 
 Finally, make sure the `html_copy_source` configuration entry is set to `True`
 (the default).

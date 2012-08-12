@@ -13,7 +13,7 @@ Contents:
    :maxdepth: 2
 
    configuration
-   push_methods/push_methods
+   accept_patches/accept_patches
    web_edit
 
 Related projects
