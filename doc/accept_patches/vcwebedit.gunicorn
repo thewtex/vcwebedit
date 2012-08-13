@@ -6,6 +6,6 @@ CONFIG = {
         '--bind=unix:/tmp/gunicorn_vcwebedit.sock',
         '--workers=3',
         '--timeout=60',
-        'vcwebeditapp:application',
+        'vcwebeditwsgi:application',
     ),
 }

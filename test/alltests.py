@@ -19,13 +19,17 @@ try:
     from socketserver import TCPServer
 except ImportError:
     from SocketServer import TCPServer
+import wsgiref.simple_server as wsgi_server
+# For vcwebeditwsgi
+sys.path.insert(0, os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'src'))
+import vcwebeditwsgi
 
 parser = argparse.ArgumentParser(description="Build the vcwebedit documention \
 and run the JavaScript tests.")
 parser.add_argument("-p", "--port",
         default=8080,
         type=int,
-        help="Local port to run the web server for testing.")
+        help="Local port to run the web server for testing.  A WSGI server will also be started on port + 1")
 parser.add_argument("-l", "--linger",
         action='store_true',
         help="Keep the local web server open after the tests run.")
@@ -79,6 +83,29 @@ class ServerRunner(object):
 server_runner = ServerRunner()
 server_runner.serve_on_port(options.port)
 
+class ThreadedWSGIServer(wsgi_server.WSGIServer):
+    allow_reuse_address = True
+
+class WSGIServerRunner(object):
+    def serve_on_port(self, port):
+        handler = wsgi_server.WSGIRequestHandler
+        self.httpd = ThreadedWSGIServer(("localhost", options.port + 1), handler)
+        self.httpd.set_app(vcwebeditwsgi.application)
+        self.server_thread = threading.Thread(
+                target=self.httpd.serve_forever
+                )
+        self.server_thread.daemon = True
+        self.server_thread.start()
+
+    def cleanup(self):
+        if self.httpd is not None:
+            print('Shutting down the testing wsgi server...')
+            self.httpd.shutdown()
+            self.httpd.server_close()
+
+wsgi_server_runner = WSGIServerRunner()
+wsgi_server_runner.serve_on_port(options.port + 1)
+
 # Run the javascript tests with phantomjs if available.
 testing_results = 0
 try:
@@ -99,5 +126,6 @@ if options.linger:
     raw_input('Press any key to shutdown the webserver.')
 
 server_runner.cleanup()
+wsgi_server_runner.cleanup()
 
 sys.exit(testing_results)
