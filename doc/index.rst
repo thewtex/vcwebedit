@@ -14,6 +14,7 @@ Contents:
 
    configuration
    accept_patches/accept_patches
+   accept_patches/server_setup
    web_edit
 
 Related projects
