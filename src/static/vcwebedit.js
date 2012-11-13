@@ -114,6 +114,9 @@ vcw.Editor = function() {
     this.modified_path = modified_path;
     this.modified_buffer = modified_buffer;
     }
+
+  /** Index of the buffer currently being edited. */
+  this.buffersInEditors = [null];
 }
 
 /** Get one of the internal CodeMirror editor instances.
@@ -137,23 +140,25 @@ vcw.Editor.prototype.loadFile = function( url, editorIdx ) {
     }
   var editor = this.codeMirrorEditors[editorIdx];
 
+  if( this.buffersInEditors[editorIdx] != null )
+    {
+    this.buffers[this.buffersInEditors[editorIdx]].modified_buffer = editor.getValue();
+    }
+
   var ii;
-  var has_buf = new Boolean( false );
   for( ii = 0; ii < this.buffers.length; ++ii )
     {
     if( this.buffers[ii].original_path == url )
       {
-      has_buf = true;
-      break;
+      editor.setValue( this.buffers[ii].modified_buffer );
+      this.buffersInEditors[editorIdx] = ii;
+      return;
       }
-    }
-  if( has_buf.valueOf() )
-    {
-    editor.setValue( this.buffers[ii].modified_buffer );
     }
 
   var Buffer = this.Buffer;
   var buffers = this.buffers;
+  this.buffersInEditors[editorIdx] = ii;
   $.get(url, function( data )
     {
     editor.setValue( data );
@@ -277,6 +282,12 @@ vcw.Editor.prototype.generatePatch = function() {
   patch += '\n---\n';
 
   var ii;
+  /** Sync the buffers with the editor content. */
+  for( ii = 0; ii < this.codeMirrorEditors.length; ++ii )
+    {
+    this.buffers[this.buffersInEditors[ii]].modified_buffer = this.codeMirrorEditors[ii].getValue();
+    }
+
   var buf;
   var old_header;
   var new_header;

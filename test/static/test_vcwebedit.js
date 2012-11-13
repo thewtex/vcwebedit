@@ -71,6 +71,8 @@ vcw.run_tests = function()
               'The goals for ITK include:';
     var buffer = new editor.Buffer(filename, input1, filename, input2 );
     this.editor.buffers.push( buffer );
+    this.editor.codeMirrorEditors[0].setValue( input2 );
+    this.editor.buffersInEditors[0] = 0;
 
     // No commit message -- error!
     var patch = this.editor.generatePatch();
@@ -150,6 +152,7 @@ vcw.run_tests = function()
     var input2 = "input that";
     var buffer = new editor.Buffer(filename, input1, filename, input2 );
     this.editor.buffers.push( buffer );
+    this.editor.buffersInEditors[0] = 0;
 
     this.editor.previewPatch();
     equal( previewSection.style.display, "block", "Preview section becomes visible." );
