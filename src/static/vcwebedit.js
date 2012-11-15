@@ -59,7 +59,7 @@ vcw.setReadyToSave = function( ready ) {
       {
       var saveToFile = document.getElementById( 'saveToFile' );
       // Turn off the patch output buttons if needed.
-      if( saveToFile.href && BlobBuilder )
+      if( saveToFile.href && Blob )
         {
         window.URL.revokeObjectURL( saveToFile.href );
         saveToFile.href = null;
@@ -299,7 +299,7 @@ vcw.Editor.prototype.generatePatch = function() {
     patch += JsDiff.createPatch( buf.original_path, buf.original_buffer, buf.modified_buffer, old_header, new_header );
     }
 
-  if( BlobBuilder )
+  if( Blob )
     {
     var saveToFile = document.getElementById( 'saveToFile' );
     if( saveToFile.href )
@@ -318,9 +318,8 @@ vcw.Editor.prototype.generatePatch = function() {
       }
 
     saveToFile.download = fileName;
-    var blobBuilder = new BlobBuilder();
-    blobBuilder.append(patch);
-    var blobURLref = window.URL.createObjectURL(blobBuilder.getBlob());
+    var blob = new Blob([patch]);
+    var blobURLref = window.URL.createObjectURL(blob);
     saveToFile.href = blobURLref;
     }
 
