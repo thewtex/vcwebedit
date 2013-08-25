@@ -36,7 +36,7 @@ module.exports = function(config) {
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage'],
 
 
     // web server port
@@ -74,8 +74,15 @@ module.exports = function(config) {
     // Convert the HTML files in JS strings and publish them in the global
     // window.__html__
     preprocessors: {
-      '**/*.html': ['html2js']
-           },
+      '**/*.html': ['html2js'],
+      '_static/vcwebedit.js': ['coverage'],
+    },
+
+
+    coverageReporter: {
+      type: 'html',
+      dir: 'coverage/'
+    },
 
 
     // Continuous Integration mode
