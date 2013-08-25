@@ -318,7 +318,7 @@ vcw.Editor.prototype.generatePatch = function() {
       }
 
     saveToFile.download = fileName;
-    var blob = new Blob([patch]);
+    var blob = new Blob([patch], {"type": "text\/plain"});
     var blobURLref = window.URL.createObjectURL(blob);
     saveToFile.href = blobURLref;
     }
