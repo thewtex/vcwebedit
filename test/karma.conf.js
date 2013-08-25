@@ -15,13 +15,13 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       '_edit_index.html',
-      '_static/**/*.css',
-      '_static/proBlue.css',
       '_static/jquery.js',
       '_static/jsdiff/diff.js',
       '_static/codemirror/lib/codemirror.js',
+      '_static/codemirror/addon/mode/overlay.js',
       '_static/codemirror/keymap/emacs.js',
       '_static/codemirror/keymap/vim.js',
+      '_static/codemirror/mode/python/python.js',
       '_static/codemirror/mode/rst/rst.js',
       '_static/vcwebedit.js',
       '_static/test_vcwebedit.js',

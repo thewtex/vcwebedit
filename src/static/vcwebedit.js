@@ -72,11 +72,11 @@ vcw.setReadyToSave = function( ready ) {
 
 
 /** Callback for when the patch content changes. */
-vcw.patchContentChanged = function() {
+vcw.patchContentChanged = function(cm, change) {
   vcw.setReadyToSave( false );
 }
 
-/** Editor object.  Manages multiple CodeMirror editors. */
+/*** Editor object.  Manages multiple CodeMirror editors. */
 vcw.Editor = function() {
   // Clear the default, which is the path to the document.
   $('#vcw.editor').html("");
@@ -86,19 +86,22 @@ vcw.Editor = function() {
       mode:  "rst",
       lineWrapping: true,
       lineNumbers: true,
-      onChange: vcw.patchContentChanged
+      gutters: ["CodeMirror-linenumbers"]
       })];
+  this.codeMirrorEditors[0].on("change", vcw.patchContentChanged);
 
-  this.commitMessageEditor = CodeMirror( document.getElementById( "vcw.commitMessage" ), {
+
+  this.commitMessageEditor = CodeMirror.fromTextArea( document.getElementById( "vcw.commitMessage" ), {
     lineWrapping: true,
     mode: "text/plain",
-    value: "",
-    onChange: vcw.patchContentChanged
+    value: ""
     });
-  this.commitMessageEditor.getScrollerElement().style.height = "15em";
+  this.commitMessageEditor.on("change", vcw.patchContentChanged);
+  this.commitMessageEditor.getWrapperElement().style.height = "15em";
   this.commitMessageEditor.refresh();
 
   this.patchPreviewEditor = CodeMirror.fromTextArea( document.getElementById( "vcw.patchPreviewText" ), {
+    value: "",
     lineWrapping: true,
     mode: "text/plain",
     readOnly: "nocursor"

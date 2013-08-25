@@ -67,8 +67,10 @@ def add_editpage_to_context(app, pagename, templatename, context, doctree):
                 if not full_path in script_files:
                     script_files.append(full_path)
             add_script_file('codemirror/lib/codemirror.js')
+            add_script_file('codemirror/addon/mode/overlay.js')
             add_script_file('codemirror/keymap/emacs.js')
             add_script_file('codemirror/keymap/vim.js')
+            add_script_file('codemirror/mode/python/python.js')
             add_script_file('codemirror/mode/rst/rst.js')
             add_script_file('jsdiff/diff.js')
             add_script_file('vcwebedit.js')
