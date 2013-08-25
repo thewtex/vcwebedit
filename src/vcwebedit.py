@@ -51,10 +51,10 @@ def add_editpage_to_context(app, pagename, templatename, context, doctree):
         meta = env.metadata[editpagename]
         if meta.has_key('editable') and meta['editable']:
             css_files = context['css_files']
-            codemirror_css = '_static/codemirror2/lib/codemirror.css'
+            codemirror_css = '_static/codemirror/lib/codemirror.css'
             if not codemirror_css in css_files:
                 css_files.append(codemirror_css)
-            css_prefix = '_static/codemirror2/theme/'
+            css_prefix = '_static/codemirror/theme/'
             for theme in ['cobalt', 'eclipse', 'elegant', 'monokai',
                     'neat', 'night', 'rubyblue']:
                 theme_css = css_prefix + theme + '.css'
@@ -66,10 +66,12 @@ def add_editpage_to_context(app, pagename, templatename, context, doctree):
                 full_path = '_static/' + path
                 if not full_path in script_files:
                     script_files.append(full_path)
-            add_script_file('codemirror2/lib/codemirror.js')
-            add_script_file('codemirror2/keymap/emacs.js')
-            add_script_file('codemirror2/keymap/vim.js')
-            add_script_file('codemirror2/mode/rst/rst.js')
+            add_script_file('codemirror/lib/codemirror.js')
+            add_script_file('codemirror/addon/mode/overlay.js')
+            add_script_file('codemirror/keymap/emacs.js')
+            add_script_file('codemirror/keymap/vim.js')
+            add_script_file('codemirror/mode/python/python.js')
+            add_script_file('codemirror/mode/rst/rst.js')
             add_script_file('jsdiff/diff.js')
             add_script_file('vcwebedit.js')
             context['script_files'] = script_files

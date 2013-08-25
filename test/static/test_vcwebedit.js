@@ -69,8 +69,10 @@ vcw.run_tests = function()
               'ITK is an open-source, cross-platform system that provides developers with an extensive suite of software tools for image analysis.\n' +
               'Developed through extreme programming methodologies, ITK employs leading-edge algorithms for processing, registering and segmenting multidimensional data.\n' +
               'The goals for ITK include:';
-    var buffer = new editor.Buffer(filename, input1, filename, input2 );
+    var buffer = new this.editor.Buffer(filename, input1, filename, input2 );
     this.editor.buffers.push( buffer );
+    this.editor.codeMirrorEditors[0].setValue( input2 );
+    this.editor.buffersInEditors[0] = 0;
 
     // No commit message -- error!
     var patch = this.editor.generatePatch();
@@ -148,8 +150,9 @@ vcw.run_tests = function()
     var filename = "mymod.py";
     var input1 = "input this";
     var input2 = "input that";
-    var buffer = new editor.Buffer(filename, input1, filename, input2 );
+    var buffer = new this.editor.Buffer(filename, input1, filename, input2 );
     this.editor.buffers.push( buffer );
+    this.editor.buffersInEditors[0] = 0;
 
     this.editor.previewPatch();
     equal( previewSection.style.display, "block", "Preview section becomes visible." );

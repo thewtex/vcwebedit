@@ -23,16 +23,14 @@
           {{ super() }}
           {%- block editor %}
           <h2>Editor</h2>
-          <div id="vcw.editor">
-          </div>
+          <div id="vcw.editor"></div>
           {%- endblock %}
           {%- block patch %}
           <h2>Patch</h2>
           <form id="patchForm">
             Commit message:<br/>
             <div style="border-style:inset;border-width:2px;">
-              <div id="vcw.commitMessage">
-              </div>
+              <textarea id="vcw.commitMessage"></textarea>
             </div>
             <table>
             <tr align="left">
@@ -59,7 +57,7 @@
           <div id="patchPreviewSection" style="display:none;">
             <h2>Patch preview</h2>
             <div style="border-style:inset;border-width:2px;">
-              <div id="vcw.patchPreviewText"></div>
+              <textarea id="vcw.patchPreviewText"></textarea>
             </div>
           </div>
           {%- endblock %}

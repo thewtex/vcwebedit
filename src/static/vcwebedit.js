@@ -59,7 +59,7 @@ vcw.setReadyToSave = function( ready ) {
       {
       var saveToFile = document.getElementById( 'saveToFile' );
       // Turn off the patch output buttons if needed.
-      if( saveToFile.href && BlobBuilder )
+      if( saveToFile.href && Blob )
         {
         window.URL.revokeObjectURL( saveToFile.href );
         saveToFile.href = null;
@@ -72,11 +72,11 @@ vcw.setReadyToSave = function( ready ) {
 
 
 /** Callback for when the patch content changes. */
-vcw.patchContentChanged = function() {
+vcw.patchContentChanged = function(cm, change) {
   vcw.setReadyToSave( false );
 }
 
-/** Editor object.  Manages multiple CodeMirror editors. */
+/*** Editor object.  Manages multiple CodeMirror editors. */
 vcw.Editor = function() {
   // Clear the default, which is the path to the document.
   $('#vcw.editor').html("");
@@ -86,19 +86,22 @@ vcw.Editor = function() {
       mode:  "rst",
       lineWrapping: true,
       lineNumbers: true,
-      onChange: vcw.patchContentChanged
+      gutters: ["CodeMirror-linenumbers"]
       })];
+  this.codeMirrorEditors[0].on("change", vcw.patchContentChanged);
 
-  this.commitMessageEditor = CodeMirror( document.getElementById( "vcw.commitMessage" ), {
+
+  this.commitMessageEditor = CodeMirror.fromTextArea( document.getElementById( "vcw.commitMessage" ), {
     lineWrapping: true,
     mode: "text/plain",
-    value: "",
-    onChange: vcw.patchContentChanged
+    value: ""
     });
-  this.commitMessageEditor.getScrollerElement().style.height = "15em";
+  this.commitMessageEditor.on("change", vcw.patchContentChanged);
+  this.commitMessageEditor.getWrapperElement().style.height = "15em";
   this.commitMessageEditor.refresh();
 
   this.patchPreviewEditor = CodeMirror.fromTextArea( document.getElementById( "vcw.patchPreviewText" ), {
+    value: "",
     lineWrapping: true,
     mode: "text/plain",
     readOnly: "nocursor"
@@ -114,6 +117,9 @@ vcw.Editor = function() {
     this.modified_path = modified_path;
     this.modified_buffer = modified_buffer;
     }
+
+  /** Index of the buffer currently being edited. */
+  this.buffersInEditors = [null];
 }
 
 /** Get one of the internal CodeMirror editor instances.
@@ -137,23 +143,25 @@ vcw.Editor.prototype.loadFile = function( url, editorIdx ) {
     }
   var editor = this.codeMirrorEditors[editorIdx];
 
+  if( this.buffersInEditors[editorIdx] != null )
+    {
+    this.buffers[this.buffersInEditors[editorIdx]].modified_buffer = editor.getValue();
+    }
+
   var ii;
-  var has_buf = new Boolean( false );
   for( ii = 0; ii < this.buffers.length; ++ii )
     {
     if( this.buffers[ii].original_path == url )
       {
-      has_buf = true;
-      break;
+      editor.setValue( this.buffers[ii].modified_buffer );
+      this.buffersInEditors[editorIdx] = ii;
+      return;
       }
-    }
-  if( has_buf.valueOf() )
-    {
-    editor.setValue( this.buffers[ii].modified_buffer );
     }
 
   var Buffer = this.Buffer;
   var buffers = this.buffers;
+  this.buffersInEditors[editorIdx] = ii;
   $.get(url, function( data )
     {
     editor.setValue( data );
@@ -277,6 +285,12 @@ vcw.Editor.prototype.generatePatch = function() {
   patch += '\n---\n';
 
   var ii;
+  /** Sync the buffers with the editor content. */
+  for( ii = 0; ii < this.codeMirrorEditors.length; ++ii )
+    {
+    this.buffers[this.buffersInEditors[ii]].modified_buffer = this.codeMirrorEditors[ii].getValue();
+    }
+
   var buf;
   var old_header;
   var new_header;
@@ -288,7 +302,7 @@ vcw.Editor.prototype.generatePatch = function() {
     patch += JsDiff.createPatch( buf.original_path, buf.original_buffer, buf.modified_buffer, old_header, new_header );
     }
 
-  if( BlobBuilder )
+  if( Blob )
     {
     var saveToFile = document.getElementById( 'saveToFile' );
     if( saveToFile.href )
@@ -307,9 +321,8 @@ vcw.Editor.prototype.generatePatch = function() {
       }
 
     saveToFile.download = fileName;
-    var blobBuilder = new BlobBuilder();
-    blobBuilder.append(patch);
-    var blobURLref = window.URL.createObjectURL(blobBuilder.getBlob());
+    var blob = new Blob([patch], {"type": "text\/plain"});
+    var blobURLref = window.URL.createObjectURL(blob);
     saveToFile.href = blobURLref;
     }
 
