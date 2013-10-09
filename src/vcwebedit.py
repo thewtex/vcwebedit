@@ -1,5 +1,5 @@
-from docutils import nodes
-from sphinx.util.compat import Directive
+"""Sphinx extension to generate HTML documents for editing the reStructuredText
+source."""
 
 
 def mark_all_editable(app, doctree, docname):
@@ -7,7 +7,7 @@ def mark_all_editable(app, doctree, docname):
     as editable that do have an *editable* file-wide metadata entry."""
     env = doctree.settings.env
     meta = env.metadata[docname]
-    if meta.has_key('editable'):
+    if 'editable' in meta:
         val = meta['editable']
         if isinstance(val, basestring):
             meta['editable'] = val.lower() in ('true', '1', 'yes', 'on')
@@ -18,9 +18,9 @@ def mark_all_editable(app, doctree, docname):
 
 def purge_editable(app, env, docname):
     """Reset the editable metadata."""
-    if env.metadata.has_key(docname):
+    if docname in env.metadata:
         meta = env.metadata[docname]
-        if meta.has_key('editable'):
+        if 'editable' in meta:
             meta.pop('editable')
 
 
@@ -47,21 +47,22 @@ def add_editpage_to_context(app, pagename, templatename, context, doctree):
     context['editpagename'] = editpagename
 
     env = app.builder.env
-    if env.metadata.has_key(editpagename):
+    if editpagename in env.metadata:
         meta = env.metadata[editpagename]
-        if meta.has_key('editable') and meta['editable']:
+        if 'editable' in meta and meta['editable']:
             css_files = context['css_files']
             codemirror_css = '_static/codemirror/lib/codemirror.css'
             if not codemirror_css in css_files:
                 css_files.append(codemirror_css)
             css_prefix = '_static/codemirror/theme/'
             for theme in ['cobalt', 'eclipse', 'elegant', 'monokai',
-                    'neat', 'night', 'rubyblue']:
+                          'neat', 'night', 'rubyblue']:
                 theme_css = css_prefix + theme + '.css'
                 if not theme_css in css_files:
                     css_files.append(theme_css)
             context['css_files'] = css_files
             script_files = context['script_files']
+
             def add_script_file(path):
                 full_path = '_static/' + path
                 if not full_path in script_files:
@@ -81,7 +82,7 @@ def collect_edit_pages(app):
     """Add the edit pages to the HTML pages that will be rendered."""
     env = app.builder.env
     for page, meta in env.metadata.iteritems():
-        if meta.has_key('editable') and meta['editable']:
+        if 'editable' in meta and meta['editable']:
             new_page = page_to_editpage(page)
             context = app.builder.get_doc_context(page, 'unused', '')
             # Prevent the HTMLBuilder from attempting to copy the source.
