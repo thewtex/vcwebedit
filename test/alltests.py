@@ -56,6 +56,13 @@ else:
     print("sphinx-build succeeded!")
 
 
+# Start the patch pushing proxy server.
+sys.path.insert(1, os.path.abspath(os.path.dirname(__file__)))
+import vcwebproxy
+if not options.linger:
+    vcwebproxy.app.config['TESTING'] = True
+app = vcwebproxy.app.test_client()
+
 # Run the javascript tests with karma if available.
 testing_results = 0
 try:
@@ -101,8 +108,11 @@ if options.linger:
     server_runner.serve_on_port(options.port)
 
     print('Point your browser to http://localhost:' + str(options.port) + '/')
-    raw_input('Press any key to shutdown the webserver.')
-
-    server_runner.cleanup()
+    print('Press Ctrl+C to shutdown the webserver.')
+    subprocess.call([sys.executable,
+                    vcwebproxy.__file__,
+                    '--host', 'localhost',
+                    '--port', str(options.port+1),
+                    '--debug'])
 
 sys.exit(testing_results)
